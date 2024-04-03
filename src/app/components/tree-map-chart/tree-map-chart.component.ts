@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import * as d3 from 'd3';
 import { DataService } from '../../services/data.service';
 
 @Component({
@@ -10,7 +9,6 @@ import { DataService } from '../../services/data.service';
   styleUrl: './tree-map-chart.component.scss'
 })
 export class TreeMapChartComponent {
-
   constructor(private dataService: DataService) {}
 
   ngAfterViewInit() {

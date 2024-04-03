@@ -1,4 +1,4 @@
-import { CrimesTypes } from "../constants/crimes-types"
+import { CrimesTypes } from "../enums/crimes-types"
 
 export interface TreeMapData {
     pdq: string,
