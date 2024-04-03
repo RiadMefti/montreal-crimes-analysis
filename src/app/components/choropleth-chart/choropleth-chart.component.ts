@@ -40,17 +40,20 @@ export class ChoroplethChartComponent {
       .attr('width', 800)
       .attr('height', 625)
 
-      d3.json('../../assets/montreal.json').then((data) => {
+      // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
+      // https://stackoverflow.com/questions/54947126/geojson-map-with-d3-only-rendering-a-single-path-in-a-feature-collection
+      d3.json('../../assets/inverted-montreal.json').then((data) => {
         var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
         console.log(montrealMap)
         // TODO: find right type to use rewind and enable fillings
+        
         // montrealMap = rewind(montrealMap, {reverse: true});
         d3.select('#map-g').selectAll('path')
         .data(montrealMap.features)
         .enter()
         .append('path')
         .attr('d', path)
-        .attr('fill', 'none') // TODO: create function w colors
+        .attr('fill', 'white') // TODO: create function w colors
         .attr('stroke', '#a7a7a0')
       });
 
