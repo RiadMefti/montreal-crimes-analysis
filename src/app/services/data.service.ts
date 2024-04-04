@@ -47,45 +47,48 @@ export class DataService {
     return Object.entries(count).map(([name, value]) => ({ name, value }));
   }
 
-  async prepareDataStackedAreaChart() {
+  async prepareDataStackedAreaChart(): Promise<any[]> {
     const data: any = await this.getMontrealCrimeData();
-    const allCategories = ['Vol de véhicule à moteur', 'Vol dans / sur véhicule à moteur', 'Introduction', 'Vols qualifiés', 'Méfait', 'Infractions entrainant la mort']; // Example category names
+    const allCategories = [
+      'Vol de véhicule à moteur',
+      'Vol dans / sur véhicule à moteur',
+      'Introduction',
+      'Vols qualifiés',
+      'Méfait',
+      'Infractions entrainant la mort'
+    ]; 
   
-    const dataByWeek = data.reduce((accumulator: { [x: string]: { [x: string]: any; }; }, currentValue: { DATE: string | number | Date; CATEGORIE: any; }) => {
+    const dataByMonth = data.reduce((accumulator: { [key: string]: { [category: string]: number } }, currentValue: any) => {
       const date = new Date(currentValue.DATE);
-      const weekNumber = this.getWeek(date);
+      const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      const weekKey = `${year}-S${String(weekNumber).padStart(2, '0')}`;
+      const monthKey = `${year}-${month.toString().padStart(2, '0')}`;
   
-      if (!accumulator[weekKey]) {
-        accumulator[weekKey] = {};
+      if (!accumulator[monthKey]) {
+        accumulator[monthKey] = {};
+        allCategories.forEach(category => {
+          accumulator[monthKey][category] = 0;
+        });
       }
   
       const correctedCategory = this.replaceIncorrectCharacters(currentValue.CATEGORIE);
-      accumulator[weekKey][correctedCategory] = (accumulator[weekKey][correctedCategory] || 0) + 1;
+      accumulator[monthKey][correctedCategory] = (accumulator[monthKey][correctedCategory] || 0) + 1;
   
       return accumulator;
     }, {});
   
-    const preparedData = Object.keys(dataByWeek).map(week => {
-      const weekData = { week, ...dataByWeek[week] };
-      allCategories.forEach(category => {
-        if (weekData[category] === undefined) {
-          weekData[category] = 0;
-        }
-      });
-      return weekData;
-    });
-  
-    preparedData.sort((a, b) => a.week.localeCompare(b.week));
+    let preparedData = Object.entries(dataByMonth).map(([month, categories]) => ({
+      month,
+      ...categories as { [key: string]: number }
+    }));
+    preparedData = preparedData.filter(dataPoint => dataPoint.month !== '2014-12');
+
+
+    preparedData.sort((a, b) => a.month.localeCompare(b.month));
+
+    console.log(preparedData);
   
     return preparedData;
-  }
-
-  private getWeek(date: Date) {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
-    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
   }
 
   private replaceIncorrectCharacters(text: string): string {

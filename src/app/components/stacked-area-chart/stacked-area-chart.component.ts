@@ -4,15 +4,10 @@ import * as d3 from 'd3';
 
 
 type DataPoint = {
-  week: string;
+  month: string;
   [category: string]: number | string | undefined;
 };
 
-interface StackedSeriesPoint {
-  0: number; // Lower bound of the stack segment (y0)
-  1: number; // Upper bound of the stack segment (y1)
-  data: DataPoint; // Your original data point type
-}
 
 @Component({
   selector: 'app-stacked-area-chart',
@@ -46,27 +41,14 @@ export class StackedAreaChartComponent implements OnInit {
     }
   }
 
-  private parseISOWeekToDate(weekString: String) {
-    const year = Number(weekString.split("-")[0]);
-    const week = Number(weekString.split("S")[1]);
-    let date = new Date(year, 0, 1);
-    
-    let dayShift = (date.getDay() === 0) ? -6 : 1 - date.getDay();
-    let firstThursday = new Date(date.setDate(1 + dayShift));
-    
-    let weekTime = firstThursday.getTime() + (week - 1) * 7 * 24 * 60 * 60 * 1000;
-
-    date.setTime(weekTime);
-    
-    if (week === 1 && date.getFullYear() > year) {
-        date = new Date(year, 0, 1);
-    }
-    return date;
+  private parseYearMonthToDate(monthString: string): Date {
+    const [year, month] = monthString.split('-').map(Number);
+    return new Date(year, month - 1);
   }
 
   private drawChart(data: any) {
     const element = this.chartContainer.nativeElement;
-    const categories = Object.keys(data[0]).filter(k => k !== 'week');
+    const categories = Object.keys(data[0]).filter(k => k !== 'month');
 
     this.svg = d3.select(element)
       .append('svg')
@@ -77,7 +59,7 @@ export class StackedAreaChartComponent implements OnInit {
 
 
     const dates: Date[] = data
-      .map((d: any) => this.parseISOWeekToDate(d.week));
+      .map((d: any) => this.parseYearMonthToDate(d.month));
       
     const x = d3.scaleTime()
       .domain(d3.extent(dates) as [Date, Date])
@@ -93,8 +75,9 @@ export class StackedAreaChartComponent implements OnInit {
         return value;
       })
     );
+
     if(typeof yMax === 'number') {
-      yMax += 200;
+      yMax += 1000;
     }
 
     const y = d3.scaleLinear()
@@ -108,10 +91,10 @@ export class StackedAreaChartComponent implements OnInit {
 
     console.log(stackedData[0]);
 
-    const areaGenerator = d3.area<StackedSeriesPoint>()
-      .x((d) => x(this.parseISOWeekToDate(d.data.week)))
-      .y0((d) => y(d[0]))
-      .y1((d) => y(d[1]));
+    const areaGenerator = d3.area<any>()
+      .x(d => x(this.parseYearMonthToDate(d.data.month)))
+      .y0(d => y(d[0]))
+      .y1(d => y(d[1]));
 
     this.svg.selectAll('.layer')
       .data(stackedData)
@@ -119,9 +102,7 @@ export class StackedAreaChartComponent implements OnInit {
       .append('path')
       .attr('class', 'layer')
       .attr('d', areaGenerator)
-      .style('fill', (d: { key: string; }) => color(d.key))
-      .on('mouseover', (d: { data: { [x: string]: any; week: any; }; }, i: any) => this.showTooltip(d, i))
-      .on('mouseout', this.hideTooltip);
+      .style('fill', (d: { key: string; }) => color(d.key));
 
     this.svg.append('g')
       .attr('class', 'axis axis--x')
@@ -163,13 +144,4 @@ export class StackedAreaChartComponent implements OnInit {
       .text(function(d: any) { return d; });
   }
 
-
-  showTooltip(d: { data: { [x: string]: any; week: any; }; }, i: any) {
-    /* console.log(d); */
-  }
-  
-  hideTooltip() {
-    d3.select('#tooltip')
-      .style('display', 'none');
-  }
 }
