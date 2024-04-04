@@ -1,7 +1,7 @@
 import { CrimesTypes } from "../enums/crimes-types"
 
 export interface TreeMapData {
-    pdq: string,
+    PDQ: string,
     [CrimesTypes.infractionsCausingDeath]: number,
     [CrimesTypes.introduction]: number,
     [CrimesTypes.mischief]: number,

@@ -1,9 +1,9 @@
 export enum CrimesTypes {
-    infractionsCausingDeath = 'infractionsCausingDeath',
-    introduction = 'introduction',
-    mischief = 'mischief',
-    TheftInOrFromMotorizedVehicle = 'TheftInOrFromMotorizedVehicle',
-    TheftOfMotorizedVehicle = 'TheftOfMotorizedVehicle',
-    robbery = 'robbery',
-    total = 'total',
+    infractionsCausingDeath = 'Infractions entrainant la mort',
+    introduction = 'Introduction',
+    mischief = 'Méfait',
+    TheftInOrFromMotorizedVehicle = 'Vol dans / sur véhicule à moteur',
+    TheftOfMotorizedVehicle = 'Vol de véhicule à moteur',
+    robbery = 'Vols qualifiés',
+    total = 'Total général',
 }
