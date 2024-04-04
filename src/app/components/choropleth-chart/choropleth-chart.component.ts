@@ -11,12 +11,23 @@ import { DataService } from '../../services/data.service';
 export class ChoroplethChartComponent {
   montrealCrimeData: any;
   constructor(private dataService: DataService) {}
+  montrealPopulationByAge: any;
+
 
   ngOnInit() {
     this.getMontrealCrimeData();
+    this.getMontrealPopulationByAge();
   }
+
+  async getMontrealPopulationByAge() {
+    this.montrealPopulationByAge = await this.dataService.getMontrealPopulationByAge();
+    console.log("Population By Age")
+    console.log(this.montrealPopulationByAge);
+  }
+
   async getMontrealCrimeData() {
     this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
+    console.log("Crime data")
     console.log(this.montrealCrimeData);
   }
 }

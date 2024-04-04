@@ -14,6 +14,11 @@ export class DataService {
     return await csv(csvFile, autoType)
   }
 
+  async getMontrealPopulationByAge(): Promise<DSVParsedArray<object> | undefined> {
+    const csvFile = '../../assets/montreal_population_by_age.csv';
+    return await csv(csvFile, autoType)
+  }
+
   async getMontrealCrimeData(): Promise<DSVParsedArray<object> | undefined> {
     const csvFile = '../../assets/actes-criminels.csv';
     return await csv(csvFile, autoType)
