@@ -25,7 +25,6 @@ export class StackedAreaChartComponent implements OnInit {
   private svg: any;
   private width: number = 960 - this.margin.left - this.margin.right;
   private height: number = 500 - this.margin.top - this.margin.bottom;
-
   constructor(private dataService: DataService) {}
 
   ngOnInit() {
@@ -48,8 +47,8 @@ export class StackedAreaChartComponent implements OnInit {
 
   private drawChart(data: any) {
     const element = this.chartContainer.nativeElement;
+  
     const categories = Object.keys(data[0]).filter(k => k !== 'month');
-
     this.svg = d3.select(element)
       .append('svg')
       .attr('width', this.width + this.margin.left + this.margin.right)
@@ -104,6 +103,7 @@ export class StackedAreaChartComponent implements OnInit {
       .attr('d', areaGenerator)
       .style('fill', (d: { key: string; }) => color(d.key));
 
+
     this.svg.append('g')
       .attr('class', 'axis axis--x')
       .attr('transform', `translate(0,${this.height})`)
@@ -144,49 +144,49 @@ export class StackedAreaChartComponent implements OnInit {
       .text(function(d: any) { return d; });
 
     const specialDate1 = new Date('2020-03-15');
-      this.svg.append('line') // Append a new line element to your SVG
-        .style('stroke', 'white') // Set the line color
-        .style('stroke-width', 2) // Set the line width
-        .style('stroke-dasharray', '3, 3') // Optional: make the line dashed
-        .attr('x1', x(specialDate1)) // Set the x position for the start of the line
-        .attr('x2', x(specialDate1)) // Set the x position for the end of the line (same as x1 for a vertical line)
-        .attr('y1', 0) // Set the y position for the start of the line (top of the SVG)
-        .attr('y2', this.height); // Set the y position for the end of the line (bottom of the SVG, adjusted for margins)
+      this.svg.append('line')
+        .style('stroke', 'white') 
+        .style('stroke-width', 2) 
+        .style('stroke-dasharray', '3, 3')
+        .attr('x1', x(specialDate1))
+        .attr('x2', x(specialDate1))
+        .attr('y1', 0) 
+        .attr('y2', this.height); 
   
     this.svg.append('text')
-      .attr('x', x(specialDate1) - 95) // Position the label right beside the line
-      .attr('y', 125) // Position the label near the top of the chart
-      .style('fill', 'black') // Set the text color to match the line
-      .text('Début de la première vague'); // Replace with the actual significance of the date
+      .attr('x', x(specialDate1) - 95)
+      .attr('y', 125)
+      .style('fill', 'black')
+      .text('Début de la première vague'); 
       
     this.svg.append('text')
-      .attr('x', x(specialDate1) - 110) // Position the label right beside the line
-      .attr('y', 140) // Position the label near the top of the chart
-      .style('fill', 'black') // Set the text color to match the line
-      .text('de COVID et premier confinement'); // Replace with the actual significance of the date
+      .attr('x', x(specialDate1) - 110) 
+      .attr('y', 140)
+      .style('fill', 'black')
+      .text('de COVID et premier confinement');
       
 
     const specialDate2 = new Date('2022-04-15');
-    this.svg.append('line') // Append a new line element to your SVG
-      .style('stroke', 'white') // Set the line color
-      .style('stroke-width', 2) // Set the line width
-      .style('stroke-dasharray', '3, 3') // Optional: make the line dashed
-      .attr('x1', x(specialDate2)) // Set the x position for the start of the line
-      .attr('x2', x(specialDate2)) // Set the x position for the end of the line (same as x1 for a vertical line)
-      .attr('y1', 0) // Set the y position for the start of the line (top of the SVG)
-      .attr('y2', this.height); // Set the y position for the end of the line (bottom of the SVG, adjusted for margins)
+    this.svg.append('line') 
+      .style('stroke', 'white') 
+      .style('stroke-width', 2) 
+      .style('stroke-dasharray', '3, 3') 
+      .attr('x1', x(specialDate2)) 
+      .attr('x2', x(specialDate2)) 
+      .attr('y1', 0)
+      .attr('y2', this.height);
 
     this.svg.append('text')
-      .attr('x', x(specialDate2) - 110) // Position the label right beside the line
-      .attr('y', 85) // Position the label near the top of the chart
-      .style('fill', 'black') // Set the text color to match the line
-      .text('Levé de la majorité des mesures'); // Replace with the actual significance of the date
+      .attr('x', x(specialDate2) - 110) 
+      .attr('y', 85) 
+      .style('fill', 'black') 
+      .text('Levé de la majorité des mesures'); 
 
     this.svg.append('text')
-      .attr('x', x(specialDate2) - 60) // Position the label right beside the line
-      .attr('y', 100) // Position the label near the top of the chart
-      .style('fill', 'black') // Set the text color to match the line
-      .text('contre la COVID'); // Replace with the actual significance of the date
+      .attr('x', x(specialDate2) - 60)
+      .attr('y', 100)
+      .style('fill', 'black')
+      .text('contre la COVID');
       
   }
 }
