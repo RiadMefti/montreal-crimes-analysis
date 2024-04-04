@@ -29,5 +29,11 @@ export class ChoroplethChartComponent {
     this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
     console.log("Crime data")
     console.log(this.montrealCrimeData);
+    this.crimeFilter('Méfait');
+  }
+  // Filtre la liste de crime selon la catégorie du crime
+  crimeFilter(filter: string) {
+    const res = this.montrealCrimeData.filter((crime: { [x: string]: string; }) => crime['CATEGORIE'] == filter);
+    console.log(res);
   }
 }
