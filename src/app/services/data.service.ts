@@ -47,34 +47,38 @@ export class DataService {
     return Object.entries(count).map(([name, value]) => ({ name, value }));
   }
 
-  prepareDataStackedAreaChart(data: any) {
+  async prepareDataStackedAreaChart() {
+    const data: any = await this.getMontrealCrimeData();
+    const allCategories = ['Vol de véhicule à moteur', 'Vol dans / sur véhicule à moteur', 'Introduction', 'Vols qualifiés', 'Méfait', 'Infractions entrainant la mort']; // Example category names
+  
     const dataByWeek = data.reduce((accumulator: { [x: string]: { [x: string]: any; }; }, currentValue: { DATE: string | number | Date; CATEGORIE: any; }) => {
       const date = new Date(currentValue.DATE);
       const weekNumber = this.getWeek(date);
       const year = date.getFullYear();
       const weekKey = `${year}-S${String(weekNumber).padStart(2, '0')}`;
-
+  
       if (!accumulator[weekKey]) {
         accumulator[weekKey] = {};
       }
-
+  
       const correctedCategory = this.replaceIncorrectCharacters(currentValue.CATEGORIE);
       accumulator[weekKey][correctedCategory] = (accumulator[weekKey][correctedCategory] || 0) + 1;
-
+  
       return accumulator;
     }, {});
-
+  
     const preparedData = Object.keys(dataByWeek).map(week => {
-      return {
-        week,
-        ...dataByWeek[week]
-      };
+      const weekData = { week, ...dataByWeek[week] };
+      allCategories.forEach(category => {
+        if (weekData[category] === undefined) {
+          weekData[category] = 0;
+        }
+      });
+      return weekData;
     });
-
-    preparedData.sort((a, b) => {
-      return a.week.localeCompare(b.week);
-    });
-
+  
+    preparedData.sort((a, b) => a.week.localeCompare(b.week));
+  
     return preparedData;
   }
 
