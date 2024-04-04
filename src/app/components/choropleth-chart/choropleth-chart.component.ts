@@ -13,7 +13,6 @@ export class ChoroplethChartComponent {
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
 
-
   ngOnInit() {
     this.getMontrealCrimeData();
     this.getMontrealPopulationByAge();
@@ -31,9 +30,10 @@ export class ChoroplethChartComponent {
     console.log(this.montrealCrimeData);
     this.crimeFilter('Méfait');
   }
+
   // Filtre la liste de crime selon la catégorie du crime
   crimeFilter(filter: string) {
     const res = this.montrealCrimeData.filter((crime: { [x: string]: string; }) => crime['CATEGORIE'] == filter);
-    console.log(res);
+    console.log(this.dataService.prepareDataForChoropleth(res));
   }
 }
