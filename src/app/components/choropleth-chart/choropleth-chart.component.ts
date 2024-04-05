@@ -16,10 +16,15 @@ export class ChoroplethChartComponent {
   montrealCrimeData: any;
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
+  montrealGeoJson: any;
+
+  crimesSummary: {[arrond: string] : number;} = {}
 
   ngOnInit() {
     this.getMontrealCrimeData();
     this.getMontrealPopulationByAge();
+    this.getMontrealGeoJson();
+    // this.averageCrimesByArrond();
     this.drawMap();
   }
 
@@ -35,10 +40,10 @@ export class ChoroplethChartComponent {
       .domain([20000, 40000, 60000, 80000, 100000])
       .range(d3.schemeReds[7]);
 
+      // TODO legend
       // d3.select('#map').select('svg').append("g")
       // .attr("transform", "translate(20,0)")
       // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
-
 
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
 
@@ -51,28 +56,34 @@ export class ChoroplethChartComponent {
 
       // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
       // https://stackoverflow.com/questions/54947126/geojson-map-with-d3-only-rendering-a-single-path-in-a-feature-collection
-      d3.json('../../assets/inverted-montreal.json').then((data) => {
-        var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
-        console.log(montrealMap)
-
-        // TODO: find right type to use rewind and enable fillings
-        
-        // montrealMap = rewind(montrealMap, {reverse: true});
-        d3.select('#map-g').selectAll('path')
-        .data(montrealMap.features)
-        .enter()
-        .append('path')
-        .attr('d', path)
-        .attr('stroke', '#a7a7a0')
-        .attr("fill", function (d) {
-          if(d == null || d.properties == null){
-            return colorScale(0);
-          }
-          return colorScale(populationByArrond(d.properties['NOM']));
-        });
-
-        
+    
+    this.getMontrealGeoJson().then((data) => {
+      var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
+      console.log(montrealMap)
+  
+      d3.select('#map-g').selectAll('path')
+      .data(montrealMap.features)
+      .enter()
+      .append('path')
+      .attr('d', path)
+      .attr('stroke', '#a7a7a0')
+      .attr("fill", function (d) {
+        if(d == null || d.properties == null){
+          return colorScale(0);
+        }
+        if(d == null || d.geometry == null){
+          return colorScale(0);
+        }
+        // var brug = d.geometry as 
+        var b =  d3.geoContains(d, [-73.626778, 45.56778])
+        // var b = d3.polygonContains(d.geometry, [45.56778, -73.626778])
+        if(b) console.log(b)
+        return colorScale(populationByArrond(d.properties['NOM']));
       });
+    })
+
+
+        
 
     } catch(error){
       console.log(error)
@@ -80,7 +91,15 @@ export class ChoroplethChartComponent {
   }
 
   getMontrealCrimesByArrond(arrond: string){
+    this.montrealCrimeData.forEach((element: any) => {
+      
+    });
     return 0;  
+  }
+
+  async getMontrealGeoJson(){
+    this.montrealGeoJson = await d3.json('../../assets/inverted-montreal.json');
+    return this.montrealGeoJson;
   }
 
 
@@ -89,6 +108,44 @@ export class ChoroplethChartComponent {
     console.log("Population By Age")
     console.log(this.montrealPopulationByAge);
   }
+
+  // this function allows us to make a summary of the crimes. It is only ran once since it takes a few minutes
+  averageCrimesByArrond(){
+    this.getMontrealGeoJson().then((data: any) => {
+      var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
+
+      this.montrealCrimeData.forEach((crime: any) => {
+        var lon = crime?.LONGITUDE;
+        var lat = crime?.LATITUDE;
+  
+        for(let feature of montrealMap.features) {
+          if(d3.geoContains(feature, [lon, lat])) {
+            if(feature == null || feature.properties == null){
+              continue;
+            }
+
+            if(this.crimesSummary[feature.properties['NOM']] == undefined){
+              this.crimesSummary[feature.properties['NOM']] = 1;
+              break;
+            }
+            this.crimesSummary[feature.properties['NOM']] = this.crimesSummary[feature.properties['NOM']] + 1;
+  
+            break;
+          }
+        }
+      })
+    })
+  }
+
+  // getAllArrond() {
+  //   // var montrealMap: geojson.FeatureCollection = data as  ;
+
+  //   this.montrealGeoJson.forEach((feature) => {
+
+  //   })
+
+  //   this.arronds 
+  // }
 
   async getMontrealCrimeData() {
     this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
