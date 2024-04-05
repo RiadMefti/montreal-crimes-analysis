@@ -54,9 +54,42 @@ export class ChoroplethChartComponent {
       .attr('width', 800)
       .attr('height', 625)
 
+      let mouseOver = function(d: any) {
+
+        if(d == null || d.properties == null){
+        console.log(d)
+
+          return;
+        }
+
+        d3.selectAll(".Neighborhood")
+          .transition()
+          .duration(200)
+          .style("opacity", .5)
+        d3.select(`#${d.properties['NOM']}`)
+          .transition()
+          .duration(200)
+          .style("opacity", 1)
+          .style("stroke", "black")
+      }
+
+      let mouseLeave = function(d: any) {
+        if(d == null || d.properties == null){
+          return;
+        }
+
+        d3.selectAll(".Neighborhood")
+          .transition()
+          .duration(200)
+          .style("opacity", .8)
+          d3.select(`#${d.properties['NOM']}`)
+          .transition()
+          .duration(200)
+          .style("stroke", "transparent")
+      }
+
       // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
       // https://stackoverflow.com/questions/54947126/geojson-map-with-d3-only-rendering-a-single-path-in-a-feature-collection
-    
     this.getMontrealGeoJson().then((data) => {
       var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
       console.log(montrealMap)
@@ -68,16 +101,25 @@ export class ChoroplethChartComponent {
       .attr('d', path)
       .attr('stroke', '#a7a7a0')
       .attr("fill", 'white')
+      .attr("class", function(d){ return "Neighborhood" } )
+      .attr("id", function(d)
+      {
+        if(d == null || d.properties == null){
+          return "";
+        }
+        return d.properties['NOM'];
+      })
       .attr("fill", function (d) {
         if(d == null || d.properties == null){
           return colorScale(0);
         }
         return colorScale(populationByArrond(d.properties['NOM']));
-      });
+      })
+      .on("mouseover", function(event, d){ mouseOver(d) })
+      .on("mouseleave", function(event, d){ mouseLeave(d) });
+
+ 
     })
-
-
-        
 
     } catch(error){
       console.log(error)
