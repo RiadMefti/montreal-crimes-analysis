@@ -11,6 +11,7 @@ import { DataService } from '../../services/data.service';
   templateUrl: './choropleth-chart.component.html',
   styleUrl: './choropleth-chart.component.scss'
 })
+
 export class ChoroplethChartComponent {
   montrealCrimeData: any;
   constructor(private dataService: DataService) {}
@@ -30,6 +31,12 @@ export class ChoroplethChartComponent {
       .attr('width', 800)
       .attr('height', 625)
 
+      var colorScale = d3.scaleLinear<string, number>()
+      .domain([20000, 40000, 60000, 80000, 100000])
+      .range(d3.schemeReds[7]);
+
+      var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
+
       d3.select('.graph')
       .select('svg')
       .append('g')
@@ -42,6 +49,7 @@ export class ChoroplethChartComponent {
       d3.json('../../assets/inverted-montreal.json').then((data) => {
         var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
         console.log(montrealMap)
+
         // TODO: find right type to use rewind and enable fillings
         
         // montrealMap = rewind(montrealMap, {reverse: true});
@@ -50,14 +58,26 @@ export class ChoroplethChartComponent {
         .enter()
         .append('path')
         .attr('d', path)
-        .attr('fill', 'white') // TODO: create function w colors
         .attr('stroke', '#a7a7a0')
+        .attr("fill", function (d) {
+          if(d == null || d.properties == null){
+            return colorScale(0);
+          }
+          return colorScale(populationByArrond(d.properties['NOM']));
+        });
+
+        
       });
 
     } catch(error){
       console.log(error)
     }
   }
+
+  getMontrealCrimesByArrond(arrond: string){
+    return 0;  
+  }
+
 
   async getMontrealPopulationByAge() {
     this.montrealPopulationByAge = await this.dataService.getMontrealPopulationByAge();
