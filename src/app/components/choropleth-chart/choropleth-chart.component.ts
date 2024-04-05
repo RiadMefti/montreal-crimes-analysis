@@ -113,6 +113,7 @@ export class ChoroplethChartComponent {
 
   // this function allows us to make a summary of the crimes. It is only ran once since it takes a few minutes
   averageCrimesByArrond(){
+    var crimesSum: {[arrond: string] : number;} = {}
     this.getMontrealGeoJson().then((data: any) => {
       var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
 
@@ -126,17 +127,20 @@ export class ChoroplethChartComponent {
               continue;
             }
 
-            if(this.crimesSummary[feature.properties['NOM']] == undefined){
-              this.crimesSummary[feature.properties['NOM']] = 1;
+            if(crimesSum[feature.properties['NOM']] == undefined){
+              crimesSum[feature.properties['NOM']] = 1;
               break;
             }
-            this.crimesSummary[feature.properties['NOM']] = this.crimesSummary[feature.properties['NOM']] + 1;
+            crimesSum[feature.properties['NOM']] = crimesSum[feature.properties['NOM']] + 1;
   
             break;
           }
         }
       })
     })
+
+    
+    console.log(JSON.stringify(crimesSum))
   }
 
   async getMontrealCrimeData() {
