@@ -63,7 +63,6 @@ export class ChoroplethChartComponent {
           .transition()
           .duration(200)
           .style("opacity", 1)
-          .style("stroke", "black")
       }
 //[id='Rosemont-La Petite-Patrie']
       let mouseLeave = function(d: any) {
@@ -71,10 +70,7 @@ export class ChoroplethChartComponent {
           .transition()
           .duration(200)
           .style("opacity", .8)
-          d3.select(`[id='${d.properties['NOM']}']`)
-          .transition()
-          .duration(200)
-          .style("stroke", "transparent")
+
       }
 
       // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
