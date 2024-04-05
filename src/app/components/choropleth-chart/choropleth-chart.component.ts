@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import * as d3 from 'd3';
 import rewind from '@turf/rewind';
 import * as geojson from 'geojson';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-choropleth-chart',
@@ -11,18 +12,14 @@ import * as geojson from 'geojson';
   styleUrl: './choropleth-chart.component.scss'
 })
 export class ChoroplethChartComponent {
-
-  // montrealMapData: geojson.FeatureCollection;
-
-  constructor() {}
+  montrealCrimeData: any;
+  constructor(private dataService: DataService) {}
+  montrealPopulationByAge: any;
 
   ngOnInit() {
+    this.getMontrealCrimeData();
+    this.getMontrealPopulationByAge();
     this.drawMap();
-  }
-
-  //TODO: move method to dataservice
-  private async getMapJsonInfo() {
-    return d3.json('../../assets/montreal.json')
   }
 
   private async drawMap(){
@@ -62,4 +59,22 @@ export class ChoroplethChartComponent {
     }
   }
 
+  async getMontrealPopulationByAge() {
+    this.montrealPopulationByAge = await this.dataService.getMontrealPopulationByAge();
+    console.log("Population By Age")
+    console.log(this.montrealPopulationByAge);
+  }
+
+  async getMontrealCrimeData() {
+    this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
+    console.log("Crime data")
+    console.log(this.montrealCrimeData);
+    this.crimeFilter('Méfait');
+  }
+
+  // Filtre la liste de crime selon la catégorie du crime
+  crimeFilter(filter: string) {
+    const res = this.montrealCrimeData.filter((crime: { [x: string]: string; }) => crime['CATEGORIE'] == filter);
+    console.log(this.dataService.prepareDataForChoropleth(res));
+  }
 }
