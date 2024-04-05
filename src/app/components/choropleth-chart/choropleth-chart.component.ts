@@ -35,6 +35,11 @@ export class ChoroplethChartComponent {
       .domain([20000, 40000, 60000, 80000, 100000])
       .range(d3.schemeReds[7]);
 
+      // d3.select('#map').select('svg').append("g")
+      // .attr("transform", "translate(20,0)")
+      // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
+
+
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
 
       d3.select('.graph')
