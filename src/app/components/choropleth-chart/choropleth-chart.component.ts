@@ -72,8 +72,6 @@ export class ChoroplethChartComponent {
         if(d == null || d.properties == null){
           return colorScale(0);
         }
-        var b=populationByArrond(d.properties['NOM'])
-        console.log(b)
         return colorScale(populationByArrond(d.properties['NOM']));
       });
     })
@@ -87,13 +85,12 @@ export class ChoroplethChartComponent {
   }
 
   getMontrealCrimesByArrond(arrond: string){
-    console.log(arrond)
     var sum = this.crimesSummary[arrond]
 
     if(sum){
       return sum
     }
-    return 100000;  
+    return 0;  
   }
 
   async getMontrealGeoJson(){
