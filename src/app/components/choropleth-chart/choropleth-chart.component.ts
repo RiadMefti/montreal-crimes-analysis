@@ -37,7 +37,7 @@ export class ChoroplethChartComponent {
       .attr('height', 625)
 
       var colorScale = d3.scaleLinear<string, number>()
-      .domain([1000, 5000, 10000, 15000, 20000,30000,40000,50000, 100000])
+      .domain([100, 500, 1000, 5000, 10000, 15000, 20000,30000,40000,50000])
       .range(d3.schemeReds[7]);
 
       // TODO legend
@@ -67,6 +67,7 @@ export class ChoroplethChartComponent {
       .append('path')
       .attr('d', path)
       .attr('stroke', '#a7a7a0')
+      .attr("fill", 'white')
       .attr("fill", function (d) {
         if(d == null || d.properties == null){
           return colorScale(0);
