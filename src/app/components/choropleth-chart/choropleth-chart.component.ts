@@ -55,34 +55,23 @@ export class ChoroplethChartComponent {
       .attr('height', 625)
 
       let mouseOver = function(d: any) {
-
-        if(d == null || d.properties == null){
-        console.log(d)
-
-          return;
-        }
-
         d3.selectAll(".Neighborhood")
           .transition()
           .duration(200)
           .style("opacity", .5)
-        d3.select(`#${d.properties['NOM']}`)
+        d3.select(`[id='${d.properties['NOM']}']`)
           .transition()
           .duration(200)
           .style("opacity", 1)
           .style("stroke", "black")
       }
-
+//[id='Rosemont-La Petite-Patrie']
       let mouseLeave = function(d: any) {
-        if(d == null || d.properties == null){
-          return;
-        }
-
         d3.selectAll(".Neighborhood")
           .transition()
           .duration(200)
           .style("opacity", .8)
-          d3.select(`#${d.properties['NOM']}`)
+          d3.select(`[id='${d.properties['NOM']}']`)
           .transition()
           .duration(200)
           .style("stroke", "transparent")
