@@ -37,14 +37,14 @@ export class ChoroplethChartComponent {
       .attr('height', 625)
 
       var colorScale = d3.scaleLinear<string, number>()
-      .domain([20000, 40000, 60000, 80000, 100000])
+      .domain([1000, 5000, 10000, 15000, 20000,30000,40000,50000, 100000])
       .range(d3.schemeReds[7]);
 
       // TODO legend
       // d3.select('#map').select('svg').append("g")
       // .attr("transform", "translate(20,0)")
       // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
-
+      await this.getCrimesSummary();
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
 
       d3.select('.graph')
@@ -71,13 +71,8 @@ export class ChoroplethChartComponent {
         if(d == null || d.properties == null){
           return colorScale(0);
         }
-        if(d == null || d.geometry == null){
-          return colorScale(0);
-        }
-        // var brug = d.geometry as 
-        var b =  d3.geoContains(d, [-73.626778, 45.56778])
-        // var b = d3.polygonContains(d.geometry, [45.56778, -73.626778])
-        if(b) console.log(b)
+        var b=populationByArrond(d.properties['NOM'])
+        console.log(b)
         return colorScale(populationByArrond(d.properties['NOM']));
       });
     })
@@ -91,10 +86,13 @@ export class ChoroplethChartComponent {
   }
 
   getMontrealCrimesByArrond(arrond: string){
-    this.montrealCrimeData.forEach((element: any) => {
-      
-    });
-    return 0;  
+    console.log(arrond)
+    var sum = this.crimesSummary[arrond]
+
+    if(sum){
+      return sum
+    }
+    return 100000;  
   }
 
   async getMontrealGeoJson(){
@@ -102,6 +100,10 @@ export class ChoroplethChartComponent {
     return this.montrealGeoJson;
   }
 
+  async getCrimesSummary(){
+    this.crimesSummary = await d3.json('../../assets/crimes-summary.json') as {[arrond: string] : number;};
+    return this.crimesSummary;
+  }
 
   async getMontrealPopulationByAge() {
     this.montrealPopulationByAge = await this.dataService.getMontrealPopulationByAge();
@@ -136,16 +138,6 @@ export class ChoroplethChartComponent {
       })
     })
   }
-
-  // getAllArrond() {
-  //   // var montrealMap: geojson.FeatureCollection = data as  ;
-
-  //   this.montrealGeoJson.forEach((feature) => {
-
-  //   })
-
-  //   this.arronds 
-  // }
 
   async getMontrealCrimeData() {
     this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
