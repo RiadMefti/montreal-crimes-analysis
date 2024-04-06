@@ -8739,7 +8739,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "L'Île-Bizard-Sainte-Geneviève",
+                "NOM": "LÎle-Bizard-Sainte-Geneviève",
                 "TYPE": "Arrondissement",
                 "CODEID": "39",
                 "ABREV": "IS",
@@ -19058,7 +19058,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "L'Île-Dorval",
+                "NOM": "LÎle-Dorval",
                 "TYPE": "Ville liée",
                 "CODEID": "50",
                 "ABREV": "ID",
@@ -32069,7 +32069,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "Baie-d'Urfé",
+                "NOM": "Baie-dUrfé",
                 "TYPE": "Ville liée",
                 "CODEID": "45",
                 "ABREV": "BU",

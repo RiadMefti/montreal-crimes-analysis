@@ -38,7 +38,7 @@ export class ChoroplethChartComponent {
       .attr('height', 625)
 
       var colorScale = d3.scaleLinear<string, number>()
-      .domain([1000, 5000, 10000, 15000, 20000,30000,40000,50000, 100000])
+      .domain([100, 500, 1000, 5000, 10000, 15000, 20000,30000,40000,50000])
       .range(d3.schemeReds[7]);
 
       // TODO legend
@@ -55,9 +55,27 @@ export class ChoroplethChartComponent {
       .attr('width', 800)
       .attr('height', 625)
 
+      let mouseOver = function(d: any) {
+        d3.selectAll(".Neighborhood")
+          .transition()
+          .duration(200)
+          .style("opacity", .5)
+        d3.select(`[id='${d.properties['NOM']}']`)
+          .transition()
+          .duration(200)
+          .style("opacity", 1)
+      }
+//[id='Rosemont-La Petite-Patrie']
+      let mouseLeave = function(d: any) {
+        d3.selectAll(".Neighborhood")
+          .transition()
+          .duration(200)
+          .style("opacity", .8)
+
+      }
+
       // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
       // https://stackoverflow.com/questions/54947126/geojson-map-with-d3-only-rendering-a-single-path-in-a-feature-collection
-    
     this.getMontrealGeoJson().then((data) => {
       var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
       console.log(montrealMap)
@@ -68,18 +86,26 @@ export class ChoroplethChartComponent {
       .append('path')
       .attr('d', path)
       .attr('stroke', '#a7a7a0')
+      .attr("fill", 'white')
+      .attr("class", function(d){ return "Neighborhood" } )
+      .attr("id", function(d)
+      {
+        if(d == null || d.properties == null){
+          return "";
+        }
+        return d.properties['NOM'];
+      })
       .attr("fill", function (d) {
         if(d == null || d.properties == null){
           return colorScale(0);
         }
-        var b=populationByArrond(d.properties['NOM'])
-        console.log(b)
         return colorScale(populationByArrond(d.properties['NOM']));
-      });
+      })
+      .on("mouseover", function(event, d){ mouseOver(d) })
+      .on("mouseleave", function(event, d){ mouseLeave(d) });
+
+ 
     })
-
-
-        
 
     } catch(error){
       console.log(error)
@@ -87,13 +113,12 @@ export class ChoroplethChartComponent {
   }
 
   getMontrealCrimesByArrond(arrond: string){
-    console.log(arrond)
     var sum = this.crimesSummary[arrond]
 
     if(sum){
       return sum
     }
-    return 100000;  
+    return 0;  
   }
 
   async getMontrealGeoJson(){
@@ -114,6 +139,7 @@ export class ChoroplethChartComponent {
 
   // this function allows us to make a summary of the crimes. It is only ran once since it takes a few minutes
   averageCrimesByArrond(){
+    var crimesSum: {[arrond: string] : number;} = {}
     this.getMontrealGeoJson().then((data: any) => {
       var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
 
@@ -139,11 +165,11 @@ export class ChoroplethChartComponent {
             }
             /*console.log(feature);
 
-            if(this.crimesSummary[feature.properties['NOM']] == undefined){
-              this.crimesSummary[feature.properties['NOM']] = 1;
+            if(crimesSum[feature.properties['NOM']] == undefined){
+              crimesSum[feature.properties['NOM']] = 1;
               break;
             }
-            this.crimesSummary[feature.properties['NOM']] = this.crimesSummary[feature.properties['NOM']] + 1;
+            crimesSum[feature.properties['NOM']] = crimesSum[feature.properties['NOM']] + 1;
   
             break;*/
             crime['ARRONDISSEMENT'] = feature.properties['NOM'];
@@ -164,6 +190,9 @@ export class ChoroplethChartComponent {
       
       
     })
+
+    
+    console.log(JSON.stringify(crimesSum))
   }
 
   async getMontrealCrimeData() {

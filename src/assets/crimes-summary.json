@@ -1,7 +1,7 @@
 {
 "Ahuntsic-Cartierville" : 13811,
 "Anjou": 5870,
-"Baie-d'Urfé": 302,
+"Baie-dUrfé": 302,
 "Beaconsfield": 923,
 "Côte-Saint-Luc": 1510,
 "Côte-des-Neiges-Notre-Dame-de-Grâce": 15148,
@@ -9,7 +9,7 @@
 "Dorval": 3861,
 "Hampstead": 391,
 "Kirkland": 1259,
-"L'Île-Bizard-Sainte-Geneviève": 974,
+"LÎle-Bizard-Sainte-Geneviève": 974,
 "LaSalle": 6387,
 "Lachine": 5488,
 "Le Plateau-Mont-Royal": 18350,
@@ -31,5 +31,6 @@
 "Verdun": 6160,
 "Ville-Marie": 30649,
 "Villeray-Saint-Michel-Parc-Extension": 16951,
-"Westmount": 2111
+"Westmount": 2111,
+"LÎle-Dorval": 0
 }
