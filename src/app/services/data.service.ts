@@ -29,7 +29,7 @@ export class DataService {
   }
 
   async getMontrealPopulationByAge(): Promise<DSVParsedArray<object> | undefined> {
-    const csvFile = '../../assets/montreal_population_by_age.csv';
+    const csvFile = '../../assets/montreal_population_by_age_2021.csv';
     return await csv(csvFile, autoType)
   }
 

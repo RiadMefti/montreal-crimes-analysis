@@ -245,9 +245,9 @@ export class ChoroplethChartComponent {
 
   async getMontrealCrimeData() {
     this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
-    console.log("Crime data")
-    console.log(this.montrealCrimeData);
-    this.crimeFilter('Méfait');
+    //console.log("Crime data")
+    //console.log(this.montrealCrimeData);
+    //this.crimeFilter('Méfait');
     //this.averageCrimesByArrond();
   }
 
