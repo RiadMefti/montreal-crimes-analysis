@@ -83,6 +83,10 @@ export class ChoroplethChartComponent {
       // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
       // await this.getCrimesSummary();
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
+      var setTableFilter = (arrond: string) => {
+        this.partOfMontrealChosen = arrond;
+        this.setAgeTable();
+      }
 
       d3.select('.graph')
       .select('svg')
@@ -110,10 +114,7 @@ export class ChoroplethChartComponent {
       }
 
       let click = function(d: any) {
-        d3.select(".info-tab")
-        .transition()
-        .duration(200)
-        .text(d.properties['NOM'])
+        setTableFilter(d.properties['NOM']);
       }
 
       // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
