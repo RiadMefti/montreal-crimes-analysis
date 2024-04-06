@@ -8,7 +8,7 @@ import { mapPDQ } from '../../../assets/mapPDQ';
 @Component({
   selector: 'app-choropleth-chart',
   standalone: true,
-  imports: [],
+  imports: [/*MatSortModule, MatTextColumn*/],
   templateUrl: './choropleth-chart.component.html',
   styleUrl: './choropleth-chart.component.scss'
 })
@@ -18,15 +18,17 @@ export class ChoroplethChartComponent {
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
   montrealGeoJson: any;
+  columnsToDisplay = ["typeCrime", "somme"]
 
   crimesSummary: {[arrond: string] : number;} = {}
 
+  crimesByTypeSummary: {[arrond: string] : number;} = {}
+
   ngOnInit() {
-    this.getMontrealCrimeData();
+    this.getMontrealCrimeData().then(() => this.drawMap());
     this.getMontrealPopulationByAge();
     this.getMontrealGeoJson();
     // this.averageCrimesByArrond();
-    this.drawMap();
   }
 
   private async drawMap(){
@@ -45,7 +47,7 @@ export class ChoroplethChartComponent {
       // d3.select('#map').select('svg').append("g")
       // .attr("transform", "translate(20,0)")
       // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
-      await this.getCrimesSummary();
+      // await this.getCrimesSummary();
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
 
       d3.select('.graph')
@@ -71,7 +73,13 @@ export class ChoroplethChartComponent {
           .transition()
           .duration(200)
           .style("opacity", .8)
+      }
 
+      let click = function(d: any) {
+        d3.select(".info-tab")
+        .transition()
+        .duration(200)
+        .text(d.properties['NOM'])
       }
 
       // Angular is picky with types, therefore we're using a map with pre inverted polygons to enable color filling
@@ -102,7 +110,8 @@ export class ChoroplethChartComponent {
         return colorScale(populationByArrond(d.properties['NOM']));
       })
       .on("mouseover", function(event, d){ mouseOver(d) })
-      .on("mouseleave", function(event, d){ mouseLeave(d) });
+      .on("mouseleave", function(event, d){ mouseLeave(d) })
+      .on("click",  function(event, d){ click(d) });
 
  
     })
@@ -113,10 +122,12 @@ export class ChoroplethChartComponent {
   }
 
   getMontrealCrimesByArrond(arrond: string){
-    var sum = this.crimesSummary[arrond]
+    var sum = 0;
+
+    this.montrealCrimeData.forEach((crime: any) => {if(crime?.ARRONDISSEMENT === arrond) sum += 1});
 
     if(sum){
-      return sum
+      return sum;
     }
     return 0;  
   }
@@ -136,6 +147,8 @@ export class ChoroplethChartComponent {
     console.log("Population By Age")
     console.log(this.montrealPopulationByAge);
   }
+
+
 
   // this function allows us to make a summary of the crimes. It is only ran once since it takes a few minutes
   /*averageCrimesByArrond(){
