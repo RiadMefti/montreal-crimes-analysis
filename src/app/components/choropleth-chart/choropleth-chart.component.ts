@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import rewind from '@turf/rewind';
 import * as geojson from 'geojson';
 import { DataService } from '../../services/data.service';
+import { mapPDQ } from '../../../assets/mapPDQ';
 
 @Component({
   selector: 'app-choropleth-chart',
@@ -117,14 +118,26 @@ export class ChoroplethChartComponent {
       var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
 
       this.montrealCrimeData.forEach((crime: any) => {
-        var lon = crime?.LONGITUDE;
-        var lat = crime?.LATITUDE;
+        let lon = crime?.LONGITUDE;
+        let lat = crime?.LATITUDE;
   
         for(let feature of montrealMap.features) {
+          if (lon === undefined || lat === undefined || lon === null || lat === null) {
+            if (crime.PDQ === undefined || crime.PDQ === null) {
+              continue;
+            }
+            if (crime.PDQ === 50 || crime.PDQ === 55) {
+              continue;
+            }
+            const pdq: number = crime.PDQ;
+            lon = mapPDQ[pdq][1];
+            lat = mapPDQ[pdq][0];
+          }
           if(d3.geoContains(feature, [lon, lat])) {
             if(feature == null || feature.properties == null){
               continue;
             }
+            /*console.log(feature);
 
             if(this.crimesSummary[feature.properties['NOM']] == undefined){
               this.crimesSummary[feature.properties['NOM']] = 1;
@@ -132,10 +145,24 @@ export class ChoroplethChartComponent {
             }
             this.crimesSummary[feature.properties['NOM']] = this.crimesSummary[feature.properties['NOM']] + 1;
   
-            break;
+            break;*/
+            crime['ARRONDISSEMENT'] = feature.properties['NOM'];
           }
         }
       })
+      console.log(this.montrealCrimeData)
+      const json = JSON.stringify(this.montrealCrimeData, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.json';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      
     })
   }
 
@@ -144,6 +171,7 @@ export class ChoroplethChartComponent {
     console.log("Crime data")
     console.log(this.montrealCrimeData);
     this.crimeFilter('Méfait');
+    //this.averageCrimesByArrond();
   }
 
   // Filtre la liste de crime selon la catégorie du crime

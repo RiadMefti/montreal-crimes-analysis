@@ -1,13 +1,22 @@
 import { Injectable } from '@angular/core';
 import { csv, autoType, DSVParsedArray, DSVRowString } from 'd3'
 import { RadialChartData } from '../components/radial-bar-chart/radial-bar-chart.component';
-
+import { json } from 'd3-fetch';
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
   constructor() { }
+
+  async getMontrealCrimeData(): Promise<any> {
+    const jsonFile = '../../assets/actes-criminels.json';
+    const obj: any = await json(jsonFile);
+    obj.forEach((element: any) => {
+      element['DATE'] = new Date(element['DATE']);
+    });
+    return obj;
+  }
 
   async getTreeMapData(): Promise<DSVParsedArray<object> | undefined> {
     const csvFile = '../../assets/tree-map-data.csv';
@@ -47,10 +56,6 @@ export class DataService {
     return result;
   }
 
-  async getMontrealCrimeData(): Promise<DSVParsedArray<object>> {
-    const csvFile = '../../assets/actes-criminels.csv';
-    return await csv(csvFile, autoType)
-  }
   async prepareDataForRadialBarChart(): Promise<RadialChartData[]> {
 
     const data: any = await this.getMontrealCrimeData();
@@ -59,7 +64,6 @@ export class DataService {
       'Soir': 0,
       'Nuit': 0
     };
-
     data.forEach((row: { [x: string]: any; }) => {
       // Assuming the QUART column contains the time of day information
       const timeOfDay = row['QUART'];
