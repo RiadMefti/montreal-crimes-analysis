@@ -61,7 +61,7 @@ export class ChoroplethChartComponent {
         d3.selectAll(".Neighborhood")
           .transition()
           .duration(200)
-          .style("opacity", .5)
+          .style("opacity", .3)
         d3.select(`[id='${d.properties['NOM']}']`)
           .transition()
           .duration(200)
@@ -72,7 +72,7 @@ export class ChoroplethChartComponent {
         d3.selectAll(".Neighborhood")
           .transition()
           .duration(200)
-          .style("opacity", .8)
+          .style("opacity", 1)
       }
 
       let click = function(d: any) {
