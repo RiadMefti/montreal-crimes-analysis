@@ -9,16 +9,19 @@
 
       <div class="two">
         <p>{{partOfMontrealChosen}}</p>
-        <table mat-table [dataSource]="dataSource" class="info-tab">
-          <!-- <mat-text-column name="2016"> 2016 </mat-text-column>
-          <mat-text-column name="2021"> 2021 </mat-text-column> -->
-          <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-            <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-            <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
-          </ng-container>
-  
-          <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
-        </table>
+        <div class="two-child">
+          <table mat-table [dataSource]="dataSource" class="info-tab">
+            <!-- <mat-text-column name="2016"> 2016 </mat-text-column>
+            <mat-text-column name="2021"> 2021 </mat-text-column> -->
+            <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
+              <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+              <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
+            </ng-container>
+    
+            <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+          </table>
+        </div>
+
       </div>
 
     </div>
