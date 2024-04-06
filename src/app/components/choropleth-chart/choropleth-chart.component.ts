@@ -4,11 +4,33 @@ import rewind from '@turf/rewind';
 import * as geojson from 'geojson';
 import { DataService } from '../../services/data.service';
 import { mapPDQ } from '../../../assets/mapPDQ';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSort, Sort } from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatCardModule} from '@angular/material/card';
+import {MatSortModule} from '@angular/material/sort';
+import { CommonModule } from '@angular/common';
+
+export interface AgeGroup {
+  category: string,	
+  value: number,	
+}
+
 
 @Component({
   selector: 'app-choropleth-chart',
   standalone: true,
-  imports: [/*MatSortModule, MatTextColumn*/],
+  imports: [
+    MatTableModule,
+    CommonModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCardModule,
+    MatSortModule
+  ],
   templateUrl: './choropleth-chart.component.html',
   styleUrl: './choropleth-chart.component.scss'
 })
@@ -18,7 +40,11 @@ export class ChoroplethChartComponent {
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
   montrealGeoJson: any;
-  columnsToDisplay = ["typeCrime", "somme"]
+  columnsToDisplay = ["category", "value"]
+
+  ageGroups: AgeGroup[] = []
+  dataSource = new MatTableDataSource(this.ageGroups);
+  partOfMontrealChosen: string = 'AGGLOMÉRATION DE MONTRÉAL';
 
   crimesSummary: {[arrond: string] : number;} = {}
 
@@ -26,9 +52,17 @@ export class ChoroplethChartComponent {
 
   ngOnInit() {
     this.getMontrealCrimeData().then(() => this.drawMap());
-    this.getMontrealPopulationByAge();
+    this.getMontrealPopulationByAge().then(() => this.setAgeTable());
     this.getMontrealGeoJson();
-    // this.averageCrimesByArrond();
+  }
+
+  private setAgeTable(){
+    this.ageGroups = []
+    this.montrealPopulationByAge.forEach((ageGroup: any) => {
+      let group: AgeGroup = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
+      this.ageGroups.push(group)
+    })
+    this.dataSource = new MatTableDataSource(this.ageGroups);
   }
 
   private async drawMap(){
@@ -67,7 +101,7 @@ export class ChoroplethChartComponent {
           .duration(200)
           .style("opacity", 1)
       }
-//[id='Rosemont-La Petite-Patrie']
+
       let mouseLeave = function(d: any) {
         d3.selectAll(".Neighborhood")
           .transition()

@@ -2,15 +2,25 @@
 
 <div class="viz-container">
     <div class="graph" id="map">
-      <svg class="main-svg"></svg>
-      <!-- <table mat-table [dataSource]="crimesByTypeSummary" class="info-tab" >
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
 
-        <mat-text-column name="typeCrime"></mat-text-column>
-        <mat-text-column name="somme"></mat-text-column> -->
+      <div class="one">
+        <svg class="main-svg"></svg>
+      </div>
 
-      <!-- </table> -->
+      <div class="two">
+        <p>{{partOfMontrealChosen}}</p>
+        <table mat-table [dataSource]="dataSource" class="info-tab">
+          <!-- <mat-text-column name="2016"> 2016 </mat-text-column>
+          <mat-text-column name="2021"> 2021 </mat-text-column> -->
+          <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
+            <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+            <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
+          </ng-container>
+  
+          <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+        </table>
+      </div>
+
     </div>
 </div>
 
