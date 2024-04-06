@@ -13,10 +13,16 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {MatSortModule} from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
 export interface AgeGroup {
   category: string,	
   value: number,	
+}
+
+export interface CrimeType {
+  name: string,
+  selected: boolean
 }
 
 
@@ -29,7 +35,9 @@ export interface AgeGroup {
     MatInputModule,
     MatSelectModule,
     MatCardModule,
-    MatSortModule
+    MatSortModule,
+    MatCheckboxModule,
+    FormsModule
   ],
   templateUrl: './choropleth-chart.component.html',
   styleUrl: './choropleth-chart.component.scss'
@@ -40,7 +48,13 @@ export class ChoroplethChartComponent {
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
   montrealGeoJson: any;
-  columnsToDisplay = ["category", "value"]
+
+  path: any;
+
+  columnsToDisplay = ["category", "value"];
+  filterCategories: CrimeType[] = [];
+  // selectedCrimeFilters: string[] = [];
+  allComplete: boolean = false;
 
   ageGroups: AgeGroup[] = []
   dataSource = new MatTableDataSource(this.ageGroups);
@@ -51,7 +65,11 @@ export class ChoroplethChartComponent {
   crimesByTypeSummary: {[arrond: string] : number;} = {}
 
   ngOnInit() {
-    this.getMontrealCrimeData().then(() => this.drawMap());
+    this.getMontrealCrimeData().then(() => {
+      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(70000)
+      this.path = d3.geoPath().projection(projection)
+      this.drawMap()
+    });
     this.getMontrealPopulationByAge().then(() => this.setAgeTable());
     this.getMontrealGeoJson();
   }
@@ -65,10 +83,30 @@ export class ChoroplethChartComponent {
     this.dataSource = new MatTableDataSource(this.ageGroups);
   }
 
+  someComplete(): boolean {
+    if (this.filterCategories == null) {
+      return false;
+    }
+    return this.filterCategories.filter(t => t.selected).length > 0 && !this.allComplete;
+  }
+
+  setAll(completed: boolean) {
+    this.allComplete = completed;
+    if (this.filterCategories == null) {
+      return;
+    }
+    this.filterCategories.forEach(t => (t.selected = completed));
+    this.updateMap();
+
+  }
+
+  updateFiltersCategories(){
+    this.allComplete = this.filterCategories != null && this.filterCategories.every(t => t.selected);
+    this.updateMap();
+  }
+
   private async drawMap(){
     try{
-      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(70000)
-      const path = d3.geoPath().projection(projection)
       d3.select('#map').select('svg')
       .attr('width', 800)
       .attr('height', 625)
@@ -127,7 +165,7 @@ export class ChoroplethChartComponent {
       .data(montrealMap.features)
       .enter()
       .append('path')
-      .attr('d', path)
+      .attr('d', this.path)
       .attr('stroke', '#a7a7a0')
       .attr("fill", 'white')
       .attr("class", function(d){ return "Neighborhood" } )
@@ -147,8 +185,6 @@ export class ChoroplethChartComponent {
       .on("mouseover", function(event, d){ mouseOver(d) })
       .on("mouseleave", function(event, d){ mouseLeave(d) })
       .on("click",  function(event, d){ click(d) });
-
- 
     })
 
     } catch(error){
@@ -156,10 +192,36 @@ export class ChoroplethChartComponent {
     }
   }
 
+  updateMap() {
+    let populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
+
+    let colorScale = d3.scaleLinear<string, number>()
+    .domain([100, 500, 1000, 5000, 10000, 15000, 20000,30000,40000,50000])
+    .range(d3.schemeReds[7]);
+
+    let geoJson = this.montrealGeoJson as geojson.FeatureCollection
+    console.log(geoJson)
+
+    d3.select('#map-g').selectAll('path')
+    .data(geoJson.features)
+    .enter()
+      .attr("fill", function (d) {
+        if(d == null || d.properties == null){
+          return colorScale(0);
+        }
+        return colorScale(populationByArrond(d.properties['NOM']));
+      })
+  }
+
   getMontrealCrimesByArrond(arrond: string){
     var sum = 0;
+    var filteredData = this.montrealCrimeData;
+    console.log(this.allComplete)
+    if(!this.allComplete){
+      filteredData = this.crimeFilter()
+    }
 
-    this.montrealCrimeData.forEach((crime: any) => {if(crime?.ARRONDISSEMENT === arrond) sum += 1});
+    filteredData.forEach((crime: any) => {if(crime?.ARRONDISSEMENT === arrond) sum += 1});
 
     if(sum){
       return sum;
@@ -247,13 +309,30 @@ export class ChoroplethChartComponent {
     this.montrealCrimeData = await this.dataService.getMontrealCrimeData();
     console.log("Crime data")
     console.log(this.montrealCrimeData);
-    this.crimeFilter('Méfait');
+    this.setCategories()
     //this.averageCrimesByArrond();
   }
 
+  setCategories(){
+    const categories: string[] = []
+    this.filterCategories = [];
+    this.montrealCrimeData.forEach((element: any) => {
+      if(!categories.includes(element['CATEGORIE'])){
+        categories.push(element['CATEGORIE'])
+        this.filterCategories.push({name: element['CATEGORIE'], selected: true})
+      }
+    });
+  }
+
   // Filtre la liste de crime selon la catégorie du crime
-  crimeFilter(filter: string) {
-    const res = this.montrealCrimeData.filter((crime: { [x: string]: string; }) => crime['CATEGORIE'] == filter);
-    console.log(this.dataService.prepareDataForChoropleth(res));
+  crimeFilter() {
+    const stringSelectedFilters: string[] = this.filterCategories.map((elem) => {
+      if(elem.selected) return elem.name;
+      return '';
+    });
+    const res = this.montrealCrimeData.filter((crime: any) => stringSelectedFilters.includes(crime['CATEGORIE']));
+    console.log(res);
+    return res;
+    // console.log(this.dataService.prepareDataForChoropleth(res));
   }
 }

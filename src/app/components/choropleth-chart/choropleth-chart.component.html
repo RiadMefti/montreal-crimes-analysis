@@ -1,8 +1,36 @@
 <p>choropleth-chart</p>
 
 <div class="viz-container">
-    <div class="graph" id="map">
+  
+  <div class="zero">
+    <section class="example-section">
+      <section class="example-section">
+        <span class="example-list-section">
+          <mat-checkbox class="example-margin"
+                        [checked]="allComplete"
+                        [indeterminate]="someComplete()"
+                        (change)="setAll($event.checked)">
+            Toutes les catégories
+          </mat-checkbox>
+        </span>
+        <span class="example-list-section">
+          <ul>
+            @for (type of filterCategories; track type) {
+              <li>
+                <mat-checkbox [(ngModel)]="type.selected"
+                              (ngModelChange)="updateFiltersCategories()">
+                  {{type.name}}
+                </mat-checkbox>
+              </li>
+            }
+          </ul>
+        </span>
+      </section>
 
+    </section>
+  </div>
+
+  <div class="graph" id="map">
       <div class="one">
         <svg class="main-svg"></svg>
       </div>
