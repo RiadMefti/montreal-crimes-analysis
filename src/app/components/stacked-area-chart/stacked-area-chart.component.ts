@@ -182,17 +182,17 @@ export class StackedAreaChartComponent implements OnInit {
 
   private updateTooltip(data: any, currentXPosition: any, currentYPosition: any) {
     this.tooltip.select(".tooltip-text").selectAll("tspan").remove();
-  
+
     let textElement = this.tooltip.select(".tooltip-text")
       .attr("x", 10)
       .attr("y", 20);
-  
+
     textElement.append("tspan")
       .style("font-weight", "bold")
       .text(`Mois: ${data.month}`);
     
     let yOffset = 20;
-  
+
     Object.entries(data).forEach(([key, value], index) => {
       if (key !== 'month') {
         textElement.append("tspan")
@@ -201,7 +201,7 @@ export class StackedAreaChartComponent implements OnInit {
           .text(`${key}: ${value}`);
       }
     });
-  
+    
     const bbox = this.tooltip.select(".tooltip-text").node().getBBox();
     this.tooltip.select(".tooltip-rect")
       .attr("x", 0)
@@ -209,8 +209,25 @@ export class StackedAreaChartComponent implements OnInit {
       .attr("width", bbox.width + 20)
       .attr("height", bbox.height + 20);
   
+    let x = currentXPosition;
+    let y = currentYPosition - bbox.height - 10; 
+    const offsetX = 20;
+    const offsetY = 30;
+  
+    if (x + bbox.width + offsetX > this.width) {
+      x = this.width - bbox.width - offsetX;
+    }
+  
+    if (x < offsetX) {
+      x = offsetX;
+    }
+  
+    if (y < offsetY) {
+      y = currentYPosition + offsetY;
+    }
+  
     this.tooltip
-      .attr("transform", `translate(${currentXPosition - bbox.width / 2},${currentYPosition - bbox.height - 10})`)
+      .attr("transform", `translate(${x},${y})`)
       .raise()
       .transition()
       .style("opacity", 1);
