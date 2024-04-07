@@ -15,6 +15,8 @@ import {MatSortModule} from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import * as Legend from "./color-legend.js";
+
 export interface Group {
   category: string,	
   value: number,	
@@ -58,7 +60,7 @@ export class ChoroplethChartComponent {
   montrealGeoJson: any;
   allArrond: any;
   path: any;
-
+  
   columnsToDisplay = ["category", "value"];
   tableCategories: TabType[] = [];
   selectedTableCategory: TabType = {name:"Age", data: ""};
@@ -165,11 +167,7 @@ export class ChoroplethChartComponent {
         .range(d3.schemeReds[8]);
       }
 
-      // TODO legend
-      // d3.select('#map').select('svg').append("g")
-      // .attr("transform", "translate(20,0)")
-      // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
-      // await this.getCrimesSummary();
+      await this.getCrimesSummary();
       
       var setTableFilter = (arrond: string) => {
         this.partOfMontrealChosen = arrond;
@@ -235,6 +233,9 @@ export class ChoroplethChartComponent {
       .on("mouseover", function(event, d){ mouseOver(d) })
       .on("mouseleave", function(event, d){ mouseLeave(d) })
       .on("click",  function(event, d){ click(d) });
+
+      Legend.Legend(colorScale)
+
     })
 
     } catch(error){
