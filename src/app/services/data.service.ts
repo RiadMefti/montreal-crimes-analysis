@@ -113,8 +113,6 @@ export class DataService {
 
 
     preparedData.sort((a, b) => a.month.localeCompare(b.month));
-
-    console.log(preparedData);
   
     return preparedData;
   }
