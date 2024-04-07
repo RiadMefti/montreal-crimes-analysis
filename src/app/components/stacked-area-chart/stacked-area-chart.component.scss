@@ -1,10 +1,43 @@
 .chart-container {
-    position: relative;
-  }
+    position: relative; 
+    width: 100%; 
+    height: auto; 
+}
   
 .filter-dropdown {
     position: absolute;
-    top: -25px; // Adjust as per your layout
-    left: 10px; // Adjust as per your layout
-    z-index: 10; // Ensure it's above the SVG
+    top: -25px;
+    left: 10px; 
+    z-index: 10;
+
+    padding: 5px 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-size: 1rem; 
+    cursor: pointer;
 }
+
+.filter-dropdown:focus {
+    outline: none; 
+    border-color: blue; 
+}
+
+.filter-dropdown option {
+    padding: 5px; 
+    background: white; 
+}
+
+#chart {
+    width: 100%;
+    height: 500px;
+}
+
+.tooltip {
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
