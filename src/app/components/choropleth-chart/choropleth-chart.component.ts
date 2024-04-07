@@ -225,7 +225,7 @@ export class ChoroplethChartComponent {
     this.filteredData.forEach((crime: any) => {if(crime?.ARRONDISSEMENT === arrond) sum += 1});
 
     if(sum){
-      return sum;
+      return sum / 9;
     }
     return 0;  
   }
