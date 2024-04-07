@@ -48,7 +48,7 @@ export class ChoroplethChartComponent {
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
   montrealGeoJson: any;
-
+  allArrond: any;
   path: any;
 
   columnsToDisplay = ["category", "value"];
@@ -67,12 +67,21 @@ export class ChoroplethChartComponent {
 
   ngOnInit() {
     this.getMontrealCrimeData().then(() => {
+      this.getAllArrond();
       const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(70000)
       this.path = d3.geoPath().projection(projection)
       this.drawMap()
     });
     this.getMontrealPopulationByAge().then(() => this.setAgeTable());
     this.getMontrealGeoJson();
+  }
+
+  private getAllArrond() {
+    this.allArrond =  [...new Set(this.montrealCrimeData
+      .map((item: { ARRONDISSEMENT: any; }) => item.ARRONDISSEMENT)
+      .filter((arrondissement: null) => arrondissement != null)
+    )]
+    .sort((a: any, b: any) => a.localeCompare(b));
   }
 
   private setAgeTable(){
@@ -98,7 +107,6 @@ export class ChoroplethChartComponent {
     }
     this.filterCategories.forEach(t => (t.selected = completed));
     this.updateMap();
-
   }
 
   updateFiltersCategories(){
@@ -111,17 +119,29 @@ export class ChoroplethChartComponent {
       d3.select('#map').select('svg')
       .attr('width', 800)
       .attr('height', 625)
-
+      
+      var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
+      let maxVal = 0;
+      this.allArrond.forEach((arrond: string) => {
+        let val  = populationByArrond(arrond);
+        if (val > maxVal) maxVal = val;
+      });
+      
       var colorScale = d3.scaleLinear<string, number>()
-      .domain([100, 500, 1000, 5000, 10000, 15000, 20000,30000,40000,50000])
-      .range(d3.schemeReds[7]);
+      .domain([0, maxVal * 0.15, maxVal * 0.3, maxVal * 0.45, maxVal * 0.6, maxVal * 0.75, maxVal * 0.9, maxVal * 1.05])
+      .range(d3.schemeReds[8]);
+      if (maxVal === 0) {
+        var colorScale = d3.scaleLinear<string, number>()
+        .domain([0, 1])
+        .range(d3.schemeReds[8]);
+      }
 
       // TODO legend
       // d3.select('#map').select('svg').append("g")
       // .attr("transform", "translate(20,0)")
       // .append(() => d3.Legend(colorScale, {title: "Healthy life expectancy (years)", width: 260}));
       // await this.getCrimesSummary();
-      var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
+      
       var setTableFilter = (arrond: string) => {
         this.partOfMontrealChosen = arrond;
         this.setAgeTable();
@@ -197,10 +217,19 @@ export class ChoroplethChartComponent {
     this.crimeFilter();
 
     let populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
-    let colorScale = d3.scaleLinear<string, number>()
-    .domain([100, 500, 1000, 5000, 10000, 15000, 20000,30000,40000,50000])
-    .range(d3.schemeReds[7]);
-
+    let maxVal = 0;
+      this.allArrond.forEach((arrond: string) => {
+        let val  = populationByArrond(arrond);
+        if (val > maxVal) maxVal = val;
+      });
+    var colorScale = d3.scaleLinear<string, number>()
+    .domain([0, maxVal * 0.15, maxVal * 0.3, maxVal * 0.45, maxVal * 0.6, maxVal * 0.75, maxVal * 0.9, maxVal * 1.05])
+    .range(d3.schemeReds[8]);
+    if (maxVal === 0) {
+      var colorScale = d3.scaleLinear<string, number>()
+      .domain([0, 1])
+      .range(d3.schemeReds[8]);
+    }
 
     d3.select('#map-g').selectAll('path')
     .transition()
