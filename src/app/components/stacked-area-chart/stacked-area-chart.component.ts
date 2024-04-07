@@ -8,7 +8,6 @@ type DataPoint = {
   [category: string]: number | string | undefined;
 };
 
-
 @Component({
   selector: 'app-stacked-area-chart',
   standalone: true,
@@ -17,12 +16,12 @@ type DataPoint = {
   styleUrls: ['./stacked-area-chart.component.scss']
 })
 
-
 export class StackedAreaChartComponent implements OnInit {
   @ViewChild('chart') chartContainer!: ElementRef;
 
   private margin = { top: 20, right: 30, bottom: 40, left: 50 };
   private svg: any;
+  private tooltip: any;
   private width: number = 960 - this.margin.left - this.margin.right;
   private height: number = 500 - this.margin.top - this.margin.bottom;
   neighborhoods: any[] = [];
@@ -56,6 +55,21 @@ export class StackedAreaChartComponent implements OnInit {
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+
+    this.tooltip = this.svg.append("g")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+      .style("pointer-events", "none");
+
+    this.tooltip.append("rect")
+      .attr("class", "tooltip-rect")
+      .style("fill", "white")
+      .style("stroke", "black");
+
+    this.tooltip.append("text")
+      .attr("class", "tooltip-text")
+      .style("text-anchor", "start")
+      .style("font-size", "12px");
   }
 
   private populateNeighborhoods() {
@@ -88,7 +102,6 @@ export class StackedAreaChartComponent implements OnInit {
     const dates = this.getDates(data);
     const x = this.createXScale(dates);
     const y = this.createYScale(data, categories);
-
     this.drawAxes(x, y);
     this.drawStackedAreas(data, categories, x, y);
     this.drawLegend(categories);
@@ -149,7 +162,70 @@ export class StackedAreaChartComponent implements OnInit {
       .enter().append('path')
       .attr('class', 'layer')
       .attr('d', areaGenerator)
-      .style('fill', (d: { key: string; }) => color(d.key));
+      .style('fill', (d: { key: string; }) => color(d.key))
+      .on("mousemove", (event: any, d: any) => this.handleMouseMove(event, d, data, x, y))
+      .on('mouseout', () => this.handleMouseOut());
+  }
+
+  private handleMouseMove(event: any, d: any, data: any[], xScale: d3.ScaleTime<number, number>, yScale: d3.ScaleLinear<number, number>) {
+    const [currentXPosition, currentYPosition] = d3.pointer(event, this.svg.node());
+    const xValue = xScale.invert(currentXPosition);
+    const bisectDate = d3.bisector((d: any) => d.month).left;
+
+    const monthData = this.transformDate(xValue);
+    const dataIndex = bisectDate(data, monthData, 1);
+    const rightData = data[dataIndex];
+    if (rightData && dataIndex > 0) {
+      this.updateTooltip(rightData, currentXPosition, currentYPosition)
+    }
+  }
+
+  private updateTooltip(data: any, currentXPosition: any, currentYPosition: any) {
+    this.tooltip.select(".tooltip-text").selectAll("tspan").remove();
+  
+    let textElement = this.tooltip.select(".tooltip-text")
+      .attr("x", 10)
+      .attr("y", 20);
+  
+    textElement.append("tspan")
+      .style("font-weight", "bold")
+      .text(`Mois: ${data.month}`);
+    
+    let yOffset = 20;
+  
+    Object.entries(data).forEach(([key, value], index) => {
+      if (key !== 'month') {
+        textElement.append("tspan")
+          .attr("x", 10)
+          .attr("dy", yOffset)
+          .text(`${key}: ${value}`);
+      }
+    });
+  
+    const bbox = this.tooltip.select(".tooltip-text").node().getBBox();
+    this.tooltip.select(".tooltip-rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", bbox.width + 20)
+      .attr("height", bbox.height + 20);
+  
+    this.tooltip
+      .attr("transform", `translate(${currentXPosition - bbox.width / 2},${currentYPosition - bbox.height - 10})`)
+      .raise()
+      .transition()
+      .style("opacity", 1);
+  }
+
+  private transformDate(xValue: Date) {
+    const date = new Date(xValue);
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const monthKey = `${year}-${month.toString().padStart(2, '0')}`;
+    return monthKey;
+  }
+  
+  private handleMouseOut() {
+    this.tooltip.transition().style("opacity", 0);
   }
 
   private drawLegend(categories: string[]) {
@@ -178,7 +254,7 @@ export class StackedAreaChartComponent implements OnInit {
       .style('fill', color)
       .style('stroke', color);
 
-      legend.append('text')
+    legend.append('text')
       .attr('x', legendRectSize + legendSpacing)
       .attr('y', legendRectSize - legendSpacing)
       .text(function(d: any) { return d; });
