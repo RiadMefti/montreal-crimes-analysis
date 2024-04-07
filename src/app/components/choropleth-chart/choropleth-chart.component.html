@@ -37,6 +37,16 @@
 
       <div class="two">
         <p>{{partOfMontrealChosen}}</p>
+
+        <mat-form-field>
+          <mat-label>Category</mat-label>
+          <mat-select (selectionChange)="onTableSelectionChange($event)" [(value)]="selectedTableCategory">
+            @for (category of tableCategories; track category) {
+              <mat-option [value]="category">{{category.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
         <div class="two-child">
           <table mat-table [dataSource]="dataSource" class="info-tab">
             <!-- <mat-text-column name="2016"> 2016 </mat-text-column>

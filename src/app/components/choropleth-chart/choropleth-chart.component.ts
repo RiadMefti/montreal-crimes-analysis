@@ -15,7 +15,7 @@ import {MatSortModule} from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
-export interface AgeGroup {
+export interface Group {
   category: string,	
   value: number,	
 }
@@ -23,6 +23,11 @@ export interface AgeGroup {
 export interface CrimeType {
   name: string,
   selected: boolean
+}
+
+export interface TabType {
+  name: string,
+  data: any
 }
 
 
@@ -47,17 +52,22 @@ export class ChoroplethChartComponent {
   montrealCrimeData: any;
   constructor(private dataService: DataService) {}
   montrealPopulationByAge: any;
+  montrealPopulationByDegree: any;
+  montrealPopulationBySalary: any;
+  montrealPopulationByEthnicity: any;
   montrealGeoJson: any;
 
   path: any;
 
   columnsToDisplay = ["category", "value"];
+  tableCategories: TabType[] = [];
+  selectedTableCategory: TabType = {name:"Age", data: ""};
   filterCategories: CrimeType[] = [];
   // selectedCrimeFilters: string[] = [];
   allComplete: boolean = true;
 
-  ageGroups: AgeGroup[] = []
-  dataSource = new MatTableDataSource(this.ageGroups);
+  groups: Group[] = []
+  dataSource = new MatTableDataSource(this.groups);
   partOfMontrealChosen: string = 'AGGLOMÉRATION DE MONTRÉAL';
   filteredData: any;
 
@@ -67,21 +77,39 @@ export class ChoroplethChartComponent {
 
   ngOnInit() {
     this.getMontrealCrimeData().then(() => {
-      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(70000)
+      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(50000)
       this.path = d3.geoPath().projection(projection)
       this.drawMap()
     });
-    this.getMontrealPopulationByAge().then(() => this.setAgeTable());
+    this.getMontrealPopulationByCategories().then(() => {
+      this.setTable(this.montrealPopulationByAge);
+      this.createCategories();
+      this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
+    });
     this.getMontrealGeoJson();
   }
 
-  private setAgeTable(){
-    this.ageGroups = []
-    this.montrealPopulationByAge.forEach((ageGroup: any) => {
-      let group: AgeGroup = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
-      this.ageGroups.push(group)
+  private createCategories(){
+    this.tableCategories = [
+      {name: "Age", data: this.montrealPopulationByAge},
+      {name: "Degree", data: this.montrealPopulationByDegree},
+      {name: "Salary", data: this.montrealPopulationBySalary},
+      {name: "Ethnicity", data: this.montrealPopulationByEthnicity}
+    ]
+  }
+  
+  onTableSelectionChange(e: any){
+    console.log(this.selectedTableCategory)
+    this.setTable(this.selectedTableCategory.data)
+  }
+
+  private setTable(data: any){
+    this.groups = []
+    data.forEach((ageGroup: any) => {
+      let group: Group = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
+      this.groups.push(group)
     })
-    this.dataSource = new MatTableDataSource(this.ageGroups);
+    this.dataSource = new MatTableDataSource(this.groups);
   }
 
   someComplete(): boolean {
@@ -100,6 +128,7 @@ export class ChoroplethChartComponent {
     this.updateMap();
 
   }
+
 
   updateFiltersCategories(){
     this.allComplete = this.filterCategories != null && this.filterCategories.every(t => t.selected);
@@ -124,7 +153,7 @@ export class ChoroplethChartComponent {
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
       var setTableFilter = (arrond: string) => {
         this.partOfMontrealChosen = arrond;
-        this.setAgeTable();
+        this.setTable(this.selectedTableCategory.data);
       }
 
       d3.select('.graph')
@@ -240,10 +269,11 @@ export class ChoroplethChartComponent {
     return this.crimesSummary;
   }
 
-  async getMontrealPopulationByAge() {
+  async getMontrealPopulationByCategories() {
     this.montrealPopulationByAge = await this.dataService.getMontrealPopulationByAge();
-    console.log("Population By Age")
-    console.log(this.montrealPopulationByAge);
+    this.montrealPopulationByEthnicity = await this.dataService.getMontrealPopulationByEthnicity();
+    this.montrealPopulationBySalary = await this.dataService.getMontrealPopulationBySalary();
+    this.montrealPopulationByDegree = await this.dataService.getMontrealPopulationByDegree();
   }
 
 
