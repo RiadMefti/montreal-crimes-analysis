@@ -121,7 +121,7 @@ export class StackedAreaChartComponent implements OnInit {
       })
     );
     return d3.scaleLinear()
-      .domain([0, yMax ? yMax : 0])
+      .domain([0, yMax ? yMax + 0.3*yMax : 0])
       .range([this.height, 0]);
   }
 
