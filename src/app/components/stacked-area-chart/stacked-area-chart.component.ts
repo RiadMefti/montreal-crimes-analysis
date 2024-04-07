@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import * as d3 from 'd3';
-
+import { CommonModule } from '@angular/common';
 
 type DataPoint = {
   month: string;
@@ -12,7 +12,7 @@ type DataPoint = {
 @Component({
   selector: 'app-stacked-area-chart',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './stacked-area-chart.component.html',
   styleUrls: ['./stacked-area-chart.component.scss']
 })
@@ -25,6 +25,9 @@ export class StackedAreaChartComponent implements OnInit {
   private svg: any;
   private width: number = 960 - this.margin.left - this.margin.right;
   private height: number = 500 - this.margin.top - this.margin.bottom;
+  neighborhoods: any[] = [];
+  private allData: any;
+  private filteredData: any;
 
   constructor(private dataService: DataService) {}
 
@@ -33,15 +36,17 @@ export class StackedAreaChartComponent implements OnInit {
   }
 
   private async loadGraph() {
-    const data = await this.getMontrealCrimeData();
+    await this.getMontrealCrimeData();
     this.setupChart();
-    this.drawChart(data);
+    this.drawChart(this.filteredData);
   }
 
-  private async getMontrealCrimeData(): Promise<any[]> {
-    return await this.dataService.prepareDataStackedAreaChart();
+  private async getMontrealCrimeData() {
+    const data = await this.dataService.getMontrealCrimeData();
+    this.allData = data;
+    this.filteredData = this.dataService.prepareDataStackedAreaChart(data);
+    this.populateNeighborhoods();
   }
-
 
   private setupChart() {
     const element = this.chartContainer.nativeElement;
@@ -53,7 +58,32 @@ export class StackedAreaChartComponent implements OnInit {
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
   }
 
+  private populateNeighborhoods() {
+    this.neighborhoods = [...new Set(this.allData
+      .map((item: { ARRONDISSEMENT: any; }) => item.ARRONDISSEMENT)
+      .filter((arrondissement: null) => arrondissement != null)
+    )]
+    .sort((a: any, b: any) => a.localeCompare(b));
+  }
+
+  onNeighborhoodChange(event: Event) {
+    const selectedNeighborhood = (event.target as HTMLSelectElement).value;
+    this.filterData(selectedNeighborhood);
+  }
+
+  private filterData(neighborhood: string) {
+    if (neighborhood === 'all') {
+      this.filteredData = this.dataService.prepareDataStackedAreaChart(this.allData);
+    } else {
+      const data = this.allData.filter((item: { ARRONDISSEMENT: string; }) => item.ARRONDISSEMENT === neighborhood);
+      this.filteredData = this.dataService.prepareDataStackedAreaChart(data);
+    }
+    this.drawChart(this.filteredData);
+  }
+
   private drawChart(data: any) {
+    d3.select(this.chartContainer.nativeElement).select('svg').remove();
+    this.setupChart();
     const categories = this.getCategories(data);
     const dates = this.getDates(data);
     const x = this.createXScale(dates);
@@ -91,7 +121,7 @@ export class StackedAreaChartComponent implements OnInit {
       })
     );
     return d3.scaleLinear()
-      .domain([0, yMax ? yMax + 1000 : 0])
+      .domain([0, yMax ? yMax : 0])
       .range([this.height, 0]);
   }
 

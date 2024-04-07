@@ -1,1 +1,10 @@
-<div #chart class="chart-container"></div>
+<div class="chart-container">
+    <select class="filter-dropdown" (change)="onNeighborhoodChange($event)">
+      <option value="all">Agglomération de Montréal</option>
+      <!-- Dynamically populate options here -->
+      <ng-container *ngFor="let neighborhood of neighborhoods">
+        <option [value]="neighborhood">{{ neighborhood }}</option>
+      </ng-container>
+    </select>
+    <div #chart></div>
+</div>

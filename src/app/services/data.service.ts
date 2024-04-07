@@ -79,8 +79,7 @@ export class DataService {
     return Object.entries(count).map(([name, value]) => ({ name, value }));
   }
 
-  async prepareDataStackedAreaChart(): Promise<any[]> {
-    const data: any = await this.getMontrealCrimeData();
+  prepareDataStackedAreaChart(data: any): any[] {
     const allCategories = [
       'Vol de véhicule à moteur',
       'Vol dans / sur véhicule à moteur',
