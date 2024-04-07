@@ -201,7 +201,19 @@ export class StackedAreaChartComponent implements OnInit {
           .text(`${key}: ${value}`);
       }
     });
-    
+
+    let totalCrimes = 0;
+    for (let [key, value] of Object.entries(data)) {
+      if (key !== 'month') {
+        totalCrimes += Number(value) || 0;
+      }
+    }
+
+    textElement.append("tspan")
+          .attr("x", 10)
+          .attr("dy", yOffset)
+          .text(`Total: ${totalCrimes}`);
+
     const bbox = this.tooltip.select(".tooltip-text").node().getBBox();
     this.tooltip.select(".tooltip-rect")
       .attr("x", 0)
