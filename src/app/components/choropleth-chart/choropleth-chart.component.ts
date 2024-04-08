@@ -126,10 +126,20 @@ export class ChoroplethChartComponent {
 
   private setTable(data: any){
     this.groups = []
-    data.forEach((ageGroup: any) => {
-      let group: Group = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
-      this.groups.push(group)
-    })
+    if(this.partOfMontrealChosen == 'LÎle-Dorval'){
+      data.forEach((ageGroup: any) => {
+        let group: Group = {category: ageGroup['CATÉGORIE'], value: ageGroup['Dorval']}
+        this.groups.push(group)
+      })
+    } else {
+      data.forEach((ageGroup: any) => {
+        let group: Group = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
+        this.groups.push(group)
+      })
+    }
+
+
+
     this.dataSource = new MatTableDataSource(this.groups);
   }
 
