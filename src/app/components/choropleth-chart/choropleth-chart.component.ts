@@ -92,6 +92,13 @@ export class ChoroplethChartComponent {
     this.getMontrealGeoJson();
   }
 
+  public resetFilters(e: any){
+    console.log("GGGG")
+    this.setTable(this.montrealPopulationByAge);
+    this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
+    this.setAll(true);
+  }
+
   private createCategories(){
     this.tableCategories = [
       {name: "Age", data: this.montrealPopulationByAge},
