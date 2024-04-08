@@ -130,7 +130,6 @@ export class ChoroplethChartComponent {
       let group: Group = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
       this.groups.push(group)
     })
-    console.log(this.groups)
     this.dataSource = new MatTableDataSource(this.groups);
   }
 

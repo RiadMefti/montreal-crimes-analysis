@@ -2408,7 +2408,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "Le Plateau-Mont-Royal",
+                "NOM": "Plateau-Mont-Royal",
                 "TYPE": "Arrondissement",
                 "CODEID": "5",
                 "ABREV": "PM",
@@ -3150,7 +3150,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "Le Sud-Ouest",
+                "NOM": "Sud-Ouest",
                 "TYPE": "Arrondissement",
                 "CODEID": "63",
                 "ABREV": "SO",
@@ -11077,7 +11077,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "Dollard-des-Ormeaux",
+                "NOM": "Dollard-Des-Ormeaux",
                 "TYPE": "Ville liée",
                 "CODEID": "65",
                 "ABREV": "DO",
@@ -32069,7 +32069,7 @@
         {
             "type": "Feature",
             "properties": {
-                "NOM": "Baie-dUrfé",
+                "NOM": "Baie-DUrfé",
                 "TYPE": "Ville liée",
                 "CODEID": "45",
                 "ABREV": "BU",
