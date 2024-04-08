@@ -234,7 +234,7 @@ export class ChoroplethChartComponent {
       .on("mouseleave", function(event, d){ mouseLeave(d) })
       .on("click",  function(event, d){ click(d) });
 
-      Legend.Legend(colorScale)
+      Legend.Legend(colorScale, false)
 
     })
 
@@ -271,6 +271,8 @@ export class ChoroplethChartComponent {
       })
     }
     )
+
+    Legend.Legend(colorScale, true);
 
   }
 

@@ -4,7 +4,7 @@ export function legend({color, ...options}) {
     return Legend(color, options);
 }
 
-export function Legend(color, {
+export function Legend(color, isCreated, {
     title = "",
     tickSize = 6,
     width = 320, 
@@ -29,15 +29,16 @@ export function Legend(color, {
       }
       return canvas;
     }
-  
-    const svg = d3.select('#choropleth-legend')
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [0, 0, width, height])
-        .style("overflow", "visible")
-        .style("display", "block");
-  
+    if(isCreated){
+      d3.select('#choropleth-legend').select('svg').remove()
+    }
+    const svg = d3.select('#choropleth-legend').append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .style("overflow", "visible")
+    .style("display", "block");
+
     let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
     let x;
   
