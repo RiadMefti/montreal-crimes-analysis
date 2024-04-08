@@ -85,17 +85,16 @@ export class ChoroplethChartComponent {
       this.drawMap()
     });
     this.getMontrealPopulationByCategories().then(() => {
+      this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
       this.setTable(this.montrealPopulationByAge);
       this.createCategories();
-      this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
     });
     this.getMontrealGeoJson();
   }
 
   public resetFilters(e: any){
-    console.log("GGGG")
-    this.setTable(this.montrealPopulationByAge);
     this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
+    this.setTable(this.montrealPopulationByAge);
     this.setAll(true);
   }
 
@@ -108,9 +107,13 @@ export class ChoroplethChartComponent {
     ]
   }
   
-  onTableSelectionChange(e: any){
-    console.log(this.selectedTableCategory)
-    this.setTable(this.selectedTableCategory.data)
+  onTableSelectionChange(data: TabType){
+    this.selectedTableCategory = data;
+    this.setTable(data.data)
+  }
+
+  compareObjects(o1: any, o2: any): boolean {
+    return o1.name === o2.name && o1.id === o2.id;
   }
 
   private getAllArrond() {
@@ -127,6 +130,7 @@ export class ChoroplethChartComponent {
       let group: Group = {category: ageGroup['CATÉGORIE'], value: ageGroup[this.partOfMontrealChosen]}
       this.groups.push(group)
     })
+    console.log(this.groups)
     this.dataSource = new MatTableDataSource(this.groups);
   }
 
@@ -214,7 +218,6 @@ export class ChoroplethChartComponent {
       // https://stackoverflow.com/questions/54947126/geojson-map-with-d3-only-rendering-a-single-path-in-a-feature-collection
     this.getMontrealGeoJson().then((data) => {
       var montrealMap: geojson.FeatureCollection = data as  geojson.FeatureCollection<geojson.Geometry, geojson.GeoJsonProperties>;
-      console.log(montrealMap)
   
       d3.select('#map-g').selectAll('path')
       .data(montrealMap.features)
@@ -285,7 +288,6 @@ export class ChoroplethChartComponent {
 
   getMontrealCrimesByArrond(arrond: string){
     var sum = 0;
-    console.log(this.allComplete)
     if(this.allComplete){
       this.filteredData = this.montrealCrimeData;
     }
@@ -399,8 +401,6 @@ export class ChoroplethChartComponent {
       return '';
     });
     const res = this.montrealCrimeData.filter((crime: any) => stringSelectedFilters.includes(crime['CATEGORIE']));
-    console.log(res);
     this.filteredData = res;
-    // console.log(this.dataService.prepareDataForChoropleth(res));
   }
 }

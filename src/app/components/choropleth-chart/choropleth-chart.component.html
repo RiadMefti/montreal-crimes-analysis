@@ -42,9 +42,9 @@
 
         <mat-form-field>
           <mat-label>Category</mat-label>
-          <mat-select (selectionChange)="onTableSelectionChange($event)" [(value)]="selectedTableCategory">
+          <mat-select (selectionChange)="onTableSelectionChange($event.value)" [compareWith]="compareObjects" [(ngModel)]="selectedTableCategory">
             @for (category of tableCategories; track category) {
-            <mat-option [value]="selectedTableCategory">{{category.name}}</mat-option>
+            <mat-option [value]="category">{{category.name}}</mat-option>
             }
           </mat-select>
         </mat-form-field>
