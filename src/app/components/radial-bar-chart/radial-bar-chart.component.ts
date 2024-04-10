@@ -43,6 +43,17 @@ export class RadialBarChartComponent implements OnInit, AfterViewInit {
       .append('g')
       .attr('transform', `translate(${width / 2},${height / 2})`);
 
+
+
+    // Tooltip setup
+    const tooltip = d3.select(element).append('div')
+      .style('position', 'absolute')
+      .style('background', 'lightgrey')
+      .style('padding', '8px')
+      .style('display', 'none')
+      .style('pointer-events', 'none') // To avoid the tooltip itself interfering with mouse events
+      .style('font-size', '12px');
+
     // Instead of using the value for the pie layout, we'll make sure each slice is 1/3 of the circle
     const pie = d3.pie<RadialChartData>()
       .sort(null) // Do not sort, we want to control the order of slices
@@ -71,6 +82,15 @@ export class RadialBarChartComponent implements OnInit, AfterViewInit {
       .attr('fill', (d, i) => {
         const colors = ['red', 'blue', 'green'];
         return colors[i % colors.length];
+      })
+      .on('mouseover', (event, d) => {
+        tooltip.style('display', 'block')
+          .html(`${d.data.value} crimes`)
+          .style('left', `${event.pageX + 10}px`)
+          .style('top', `${event.pageY + 10}px`);
+      })
+      .on('mouseout', () => {
+        tooltip.style('display', 'none');
       });
 
     svg.selectAll('text')
@@ -80,7 +100,10 @@ export class RadialBarChartComponent implements OnInit, AfterViewInit {
       .attr('dy', '0.35em')
       .style('text-anchor', 'middle')
       .style('font-size', '1em')
-      .text(d => d.data.name + ' (' + d.data.value + ')');
+      .style('fill', 'white')
+      .style('font-size', '18px')
+     
+      .text(d => d.data.name);
 
     // Add dashed lines, using a loop to create multiple lines if necessary
     const levels = 3; // For example, 3 dashed lines
