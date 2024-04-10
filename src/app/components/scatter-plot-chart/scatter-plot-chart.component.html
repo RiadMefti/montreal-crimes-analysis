@@ -1,1 +1,9 @@
-<div class="scatter-plot-graph" #chart></div>
+<div class="bubble-container">
+    <select class="filter-dropdown" (change)="onVariableChange($event)">
+        <ng-container *ngFor="let variable of variables">
+            <option [value]="variable">{{ variable }}</option>
+        </ng-container>
+    </select>
+    <div class="scatter-plot-graph" #chart></div>
+</div>
+

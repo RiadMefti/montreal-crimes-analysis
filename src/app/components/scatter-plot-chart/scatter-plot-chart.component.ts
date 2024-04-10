@@ -1,17 +1,19 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { DataService } from '../../services/data.service';
 import { NeighborhoodData } from '../../interfaces/scatterplot';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-scatter-plot-chart',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './scatter-plot-chart.component.html',
   styleUrl: './scatter-plot-chart.component.scss'
 })
 export class ScatterPlotChartComponent implements OnInit {
+
   @ViewChild('chart') chartContainer!: ElementRef;
   data: Array<NeighborhoodData> = [];
   private margin = { top: 20, right: 30, bottom: 40, left: 50 };
@@ -19,6 +21,7 @@ export class ScatterPlotChartComponent implements OnInit {
   private tooltip: any;
   private width: number = 960 - this.margin.left - this.margin.right;
   private height: number = 500 - this.margin.top - this.margin.bottom;
+  variables: any[] = []
 
   constructor(private dataService: DataService) { }
 
@@ -29,11 +32,12 @@ export class ScatterPlotChartComponent implements OnInit {
   async loadGraph() {
     await this.getNeighborhoodData();
     this.setupChart();
-      this.buildChart();
+    this.buildChart();
   }
 
   async getNeighborhoodData() {
     this.data = await this.dataService.getNeighborhoodData();
+    this.variables = Object.keys(this.data[0]);
   }
 
   setupChart() {
@@ -45,25 +49,34 @@ export class ScatterPlotChartComponent implements OnInit {
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('g')
       .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-  
   }
 
 
-  buildChart() {
+  buildChart(xName = 'median_income') {
     d3.select(this.chartContainer.nativeElement).select('svg').remove();
     this.setupChart();
 
-    const xScale = this.setXScale();
+    const xScale = this.setXScale(xName);
     const yScale = this.setYScale();
     const radiusScale = this.setRadiusScale(this.data);
     console.log(xScale, yScale);
     this.drawAxes(xScale, yScale);
 
+    this.drawCircles(xScale, yScale, radiusScale, xName);
+  }
+
+  drawCircles(
+    xScale: d3.ScaleLinear<number, number>, 
+    yScale: d3.ScaleLinear<number, number>, 
+    radiusScale: d3.ScaleLinear<number, number>,
+    xName:string='median_income')
+    {
+    console.log("Drawing Circles");
     this.svg.selectAll('circle')
       .data(this.data)
       .enter()
       .append('circle')
-      .attr('cx', (d : NeighborhoodData) => xScale(d.median_income))
+      .attr('cx', (d : NeighborhoodData) => xScale(+d[xName as keyof NeighborhoodData]))
       .attr('cy', (d : NeighborhoodData) => yScale(d.crime_rate))
       .attr('r', (d : NeighborhoodData) => radiusScale(d.population))
       .attr('fill', 'steelblue')
@@ -105,16 +118,9 @@ export class ScatterPlotChartComponent implements OnInit {
       .call(d3.axisLeft(y));
   }
 
-  // setXAxis(xScale: any, height: number,) {
-  //   return d3.select('.x.axis') // Specify the type of selection as SVGSVGElement
-  //     .attr('transform', `translate(0, ${height})`)
-  //     .call(d3.axisBottom(xScale));
-  // }
-
-  // setYAxis(yScale: any, width: number) {
-  //   return d3.select('.y.axis') // Specify the type of selection as SVGSVGElement
-  //     .attr('transform', `translate(0, 0)`)
-  //     .call(d3.axisLeft(yScale));
-  // }
+  onVariableChange($event: Event) {
+      const xName = ($event.target as HTMLSelectElement).value;
+      this.buildChart(xName);
+  }
 
 }
