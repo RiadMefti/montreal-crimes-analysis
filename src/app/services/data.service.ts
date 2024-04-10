@@ -34,6 +34,21 @@ export class DataService {
     return await csv(csvFile, autoType)
   }
 
+  async getMontrealPopulationBySalary(): Promise<DSVParsedArray<object> | undefined> {
+    const csvFile = '../../assets/montreal_population_by_highest_salary_2021.csv';
+    return await csv(csvFile, autoType)
+  }
+
+  async getMontrealPopulationByDegree(): Promise<DSVParsedArray<object> | undefined> {
+    const csvFile = '../../assets/montreal_population_by_highest_degree_2021.csv';
+    return await csv(csvFile, autoType)
+  }
+
+  async getMontrealPopulationByEthnicity(): Promise<DSVParsedArray<object> | undefined> {
+    const csvFile = '../../assets/montreal_population_by_ethnicity_2021.csv';
+    return await csv(csvFile, autoType)
+  }
+
   prepareDataForChoropleth(data: any) {
     data.map((element: any) => {
       element['PDQ'];
