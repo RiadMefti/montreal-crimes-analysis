@@ -1,7 +1,9 @@
-.container {
+.viz-container {
 width: 100%;
 margin: auto;
 padding: 10px;
+display: flex;
+justify-content: center;
 }
   
 .one {
@@ -13,8 +15,6 @@ float: left;
 .side {
 margin-left: 80%;
 width: 20%;
-
-
 }
 
 .two-child{
