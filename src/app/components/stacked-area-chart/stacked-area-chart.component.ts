@@ -103,9 +103,9 @@ export class StackedAreaChartComponent implements OnInit {
     const x = this.createXScale(dates);
     const y = this.createYScale(data, categories);
     this.drawAxes(x, y);
-    // this.drawStackedAreas(data, categories, x, y);
-    // this.drawLegend(categories);
-    // this.annotateSpecialDates(x);
+    this.drawStackedAreas(data, categories, x, y);
+    this.drawLegend(categories);
+    this.annotateSpecialDates(x);
   }
 
   private getCategories(data: any[]): string[] {

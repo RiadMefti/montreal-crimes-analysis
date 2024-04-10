@@ -55,20 +55,21 @@ export class ScatterPlotChartComponent implements OnInit {
 
     const xScale = this.setXScale();
     const yScale = this.setYScale();
+    const radiusScale = this.setRadiusScale(this.data);
     console.log(xScale, yScale);
     this.drawAxes(xScale, yScale);
 
-    // g.selectAll('circle')
-    //   .data(data)
-    //   .enter()
-    //   .append('circle')
-    //   .attr('cx', d => xScale(d.median_income))
-    //   .attr('cy', d => yScale(d.crime_rate))
-    //   .attr('r', d => radiusScale(d.population))
-    //   .attr('fill', 'steelblue')
-    //   .attr('fill-opacity', 0.5)
-    //   .attr('stroke', 'black')
-    //   .attr('stroke-width', 1);
+    this.svg.selectAll('circle')
+      .data(this.data)
+      .enter()
+      .append('circle')
+      .attr('cx', (d : NeighborhoodData) => xScale(d.median_income))
+      .attr('cy', (d : NeighborhoodData) => yScale(d.crime_rate))
+      .attr('r', (d : NeighborhoodData) => radiusScale(d.population))
+      .attr('fill', 'steelblue')
+      .attr('fill-opacity', 0.5)
+      .attr('stroke', 'black')
+      .attr('stroke-width', 1);
   }
 
   setXScale(xName:string='median_income') {
@@ -86,13 +87,12 @@ export class ScatterPlotChartComponent implements OnInit {
       .range([this.height, 0]);
   }
 
-  // setRadiusScale(data: Array<NeighborhoodData>) {
-  //   const max = d3.max(data, x => x.population) ?? 0;
-  //   const min = d3.min(data, x => x.population) ?? 0;
-  //   return d3.scaleLinear()
-  //     .domain([min, max])
-  //     .range([5, 20]);
-  // }
+  setRadiusScale(data: Array<NeighborhoodData>) {
+    const values = data.map(x => +x.population);
+    return d3.scaleLinear()
+      .domain(d3.extent(values) as [number, number])
+      .range([5, 20]);
+  }
 
   private drawAxes(x: d3.ScaleLinear<number, number>, y: d3.ScaleLinear<number, number>) {
     this.svg.append('g')
