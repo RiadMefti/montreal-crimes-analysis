@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { csv, autoType, DSVParsedArray, DSVRowString } from 'd3'
 import { RadialChartData } from '../components/radial-bar-chart/radial-bar-chart.component';
 import { json } from 'd3-fetch';
+import { NeighborhoodData } from '../interfaces/scatterplot';
 @Injectable({
   providedIn: 'root'
 })
@@ -118,6 +119,12 @@ export class DataService {
     preparedData.sort((a, b) => a.month.localeCompare(b.month));
   
     return preparedData;
+  }
+
+  async getNeighborhoodData(): Promise<NeighborhoodData[]> {
+    const jsonFile = '../../assets/neighborhood_data.json';
+    const data = await json(jsonFile) as NeighborhoodData[];
+    return data;
   }
 
   private replaceIncorrectCharacters(text: string): string {
