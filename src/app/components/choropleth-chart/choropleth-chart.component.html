@@ -1,8 +1,6 @@
-<h2 class="chart-title">
-  Nombre de crimes moyen par année à Montréal selon le quartier
-</h2>
-<div class="viz-container">
-  <div className="right">
+
+<div class="viz-container"  style="display: flex; align-items: flex-start; width: 100vw;">
+  <div className="right" >
     <button (click)="resetFilters($event)"> Réinitialiser les filtres </button>
     <div class="zero">
       <section class="example-section">
@@ -30,43 +28,45 @@
     </div>
   </div>
 
-  <div class="graph" id="map">
-    <div class="one">
-      <div id="choropleth-legend">
+  <div class="graph" id="map"   >
+    <div class="one" style="display: flex; flex-direction: column; justify-content: center; align-items: center;" >
+      <h2 class="chart-title">
+        Nombre de crimes moyen par année à Montréal selon le quartier
+      </h2>
+      <div id="choropleth-legend" >
     
       </div>
+      
       <svg class="main-svg"></svg>
     </div>
-    <div class="side">
-      <div class="two">
-        <p>{{partOfMontrealChosen}}</p>
+  </div>
 
-        <mat-form-field>
-          <mat-label>Category</mat-label>
-          <mat-select (selectionChange)="onTableSelectionChange($event.value)" [compareWith]="compareObjects" [(ngModel)]="selectedTableCategory">
-            @for (category of tableCategories; track category) {
-            <mat-option [value]="category">{{category.name}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+    <div class="two" style="width: 20vw;">
+      <p>{{partOfMontrealChosen}}</p>
 
-        <div class="two-child">
-          <table mat-table [dataSource]="dataSource" class="info-tab">
-            <!-- <mat-text-column name="2016"> 2016 </mat-text-column>
-            <mat-text-column name="2021"> 2021 </mat-text-column> -->
-            <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-              <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-              <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
-            </ng-container>
+      <mat-form-field>
+        <mat-label>Category</mat-label>
+        <mat-select (selectionChange)="onTableSelectionChange($event.value)" [compareWith]="compareObjects" [(ngModel)]="selectedTableCategory">
+          @for (category of tableCategories; track category) {
+          <mat-option [value]="category">{{category.name}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-            <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
-          </table>
-        </div>
+      <div class="two-child" style="max-height: 70vh; overflow: scroll;">
+        <table mat-table [dataSource]="dataSource" class="info-tab">
+          <!-- <mat-text-column name="2016"> 2016 </mat-text-column>
+          <mat-text-column name="2021"> 2021 </mat-text-column> -->
+          <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
+            <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+            <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
+          </ng-container>
 
+          <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+        </table>
       </div>
+
     </div>
 
-
-
-  </div>
+ 
 </div>
