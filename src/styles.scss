@@ -50,3 +50,47 @@ body {
     --gap03: 5px;
     --gap04: 50px;
 }
+
+body, ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Style for the navigation bar */
+  nav {
+    background-color: #f8f9fa; /* Light gray background */
+    text-align: center;
+    padding: 12px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+  }
+
+  /* Style for the navigation list */
+  nav ul {
+    list-style-type: none;
+  }
+
+  /* Style for each navigation link */
+  nav li {
+    display: inline; /* Inline display for horizontal layout */
+    margin: 0 15px; /* Spacing between links */
+  }
+
+  /* Style for the anchor tags */
+  nav a {
+    text-decoration: none; /* No underline */
+    color: #007bff; /* Bootstrap primary blue for links */
+    font-family: Arial, sans-serif; /* Font style */
+    font-size: 16px; /* Slightly larger font size for readability */
+    transition: color 0.3s; /* Smooth transition for hover effect */
+  }
+
+  /* Hover effect for links */
+  nav a:hover {
+    color: #0056b3; /* Darker shade of blue on hover */
+    text-decoration: none; /* Ensure no underline on hover */
+  }
+
+  /* Active link style */
+  nav a:active {
+    color: #004085; /* Even darker blue for active state */
+  }
