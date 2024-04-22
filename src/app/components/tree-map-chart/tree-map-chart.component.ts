@@ -90,6 +90,21 @@ export class TreeMapChartComponent {
       .attr('width', (d: any) => d.x1 - d.x0)
       .attr('height', (d: any) => d.y1 - d.y0)
       .attr('fill', (d: any) => colorScale(d.data[CrimesTypes.total]))
+      .style('stroke', 'white')
+      .style('stroke-width', 1)
+      .style('opacity', 0.8)
+      .on('mouseover', function() {
+        d3.select(this)
+          .style('opacity', 1)
+          .style('stroke', 'yellow')
+          .style('stroke-width', 5);
+      })
+      .on('mouseout', function() {
+        d3.select(this)
+          .style('opacity', 0.8)
+          .style('stroke', 'white')
+          .style('stroke-width', 1);
+      })
       .on('mousemove', (mouseEvent, d: any) => {
         // Show tooltip
         tooltip.style('opacity', .9);
