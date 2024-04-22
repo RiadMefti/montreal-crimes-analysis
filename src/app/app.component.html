@@ -334,14 +334,28 @@
 
 <nav>
   <ul>
-      <li><a href="choropleth-chart">Choropleth Chart</a></li>
-      <li><a href="stacked-area-chart">Stacked Area Chart</a></li>
-      <li><a href="radial-bar-chart">Radial Bar Chart</a></li>
-      <li><a href="tree-map-chart">Tree Map Chart</a></li>
-      <li><a href="scatter-plot-chart">Scatter Plot Chart</a></li>
+      <li><a href="#choropleth-chart">Choropleth Chart</a></li>
+      <li><a href="#stacked-area-chart">Stacked Area Chart</a></li>
+      <li><a href="#radial-bar-chart">Radial Bar Chart</a></li>
+      <li><a href="#tree-map-chart">Tree Map Chart</a></li>
+      <li><a href="#scatter-plot-chart">Scatter Plot Chart</a></li>
   </ul>
 </nav>
 
-
 <div style="width:96vw;  padding: 4vh 2vw;"><router-outlet /></div>
 
+<div id="choropleth-chart">
+  <app-choropleth-chart/>
+</div>
+<div id="stacked-area-chart">
+  <app-stacked-area-chart/>
+</div>
+<div id="radial-bar-chart">
+  <app-radial-bar-chart/>
+</div>
+<div id="tree-map-chart">
+  <app-tree-map-chart/>
+</div>
+<div id="scatter-plot-chart">
+  <app-scatter-plot-chart />
+</div>
