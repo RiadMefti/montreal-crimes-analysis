@@ -41,7 +41,7 @@
   </mat-card>
 
 
-  <div class="two">
+  <mat-card class="two">
 
     <div id="categoryFilter">
       <p>{{partOfMontrealChosen}}</p>
@@ -55,7 +55,7 @@
       </mat-form-field>
     </div>
 
-    <div class="two-child" style="max-height: 70vh; overflow: scroll;">
+    <div class="two-child">
       <table mat-table [dataSource]="dataSource" class="info-tab">
         <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
           <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
@@ -65,5 +65,5 @@
         <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
       </table>
     </div>
-  </div>
+  </mat-card>
 </div>
