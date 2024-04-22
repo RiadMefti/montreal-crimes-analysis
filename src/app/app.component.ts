@@ -16,7 +16,12 @@ import { ScatterPlotChartComponent } from "./components/scatter-plot-chart/scatt
 export class AppComponent {
   title = 'montreal-crimes-analysis';
 
-  public scroll($element: any): void{
-    $element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+  click(id: any) {
+    const element = document.getElementById(id);
+
+    if(element == null)
+      return;
+
+    element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
   }
 }
