@@ -1,48 +1,33 @@
 
-<div class="viz-container"  style="display: flex; align-items: flex-start; width: 90vw;">
-  <mat-card id="filtersCategory" className="right">
-    <div class="zero">
-        <section class="example-section">
-          <span class="example-list-section">
-            <mat-checkbox class="example-margin" [checked]="allComplete" [indeterminate]="someComplete()"
-              (change)="setAll($event.checked)">
-              Toutes les catégories
-            </mat-checkbox>
-          </span>
-          <span class="example-list-section">
-            <ul>
-              @for (type of filterCategories; track type) {
-              <li>
-                <mat-checkbox [(ngModel)]="type.selected" (ngModelChange)="updateFiltersCategories()">
-                  {{type.name}}
-                </mat-checkbox>
-              </li>
-              }
-            </ul>
-          </span>
-
-      </section>
-    </div>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-title>
-      Nombre de crimes moyen par année à Montréal selon le quartier
-    </mat-card-title>
-    <div class="graph" id="map">
-      <div class="one" style="display: flex; flex-direction: column; justify-content: center; align-items: center;" >
-        <div id="choropleth-legend"></div>
-        <svg class="main-svg"></svg>
+<div class="viz-container">
+  
+  <div id="additionnals">
+    <mat-card id="filtersCategory" className="right">
+      <div class="zero">
+          <section class="example-section">
+            <span class="example-list-section">
+              <mat-checkbox class="example-margin" [checked]="allComplete" [indeterminate]="someComplete()"
+                (change)="setAll($event.checked)">
+                Toutes les catégories
+              </mat-checkbox>
+            </span>
+            <span class="example-list-section">
+              <ul>
+                @for (type of filterCategories; track type) {
+                <li>
+                  <mat-checkbox [(ngModel)]="type.selected" (ngModelChange)="updateFiltersCategories()">
+                    {{type.name}}
+                  </mat-checkbox>
+                </li>
+                }
+              </ul>
+            </span>
+  
+        </section>
       </div>
-    </div>
-    <mat-card-actions>
-      <button id="resetFiltersButton" (click)="resetFilters($event)" mat-raised-button> <mat-icon>replay</mat-icon> Réinitialiser les filtres</button>
-    </mat-card-actions>
-  </mat-card>
-
-
+    </mat-card>
+    
   <mat-card class="two">
-
     <div id="categoryFilter">
       <mat-form-field>
         <mat-label>Category</mat-label>
@@ -65,5 +50,21 @@
         <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
       </table>
     </div>
+  </mat-card>
+  </div>
+
+  <mat-card>
+    <mat-card-title>
+      Nombre de crimes moyen par année à Montréal selon le quartier
+    </mat-card-title>
+    <div class="graph" id="map">
+      <div class="one" >
+        <div id="choropleth-legend"></div>
+        <svg class="main-svg"></svg>
+      </div>
+    </div>
+    <mat-card-actions>
+      <button id="resetFiltersButton" (click)="resetFilters($event)" mat-raised-button> <mat-icon>replay</mat-icon> Réinitialiser les filtres</button>
+    </mat-card-actions>
   </mat-card>
 </div>

@@ -84,7 +84,7 @@ export class ChoroplethChartComponent {
   ngOnInit() {
     this.getMontrealCrimeData().then(() => {
       this.getAllArrond();
-      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(50000)
+      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(60000)
       this.path = d3.geoPath().projection(projection)
       this.drawMap()
     });

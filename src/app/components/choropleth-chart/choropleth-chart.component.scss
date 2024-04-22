@@ -1,8 +1,6 @@
 #filtersCategory {
-    margin: auto;  
-    padding: 20px;
+    margin-bottom: 10px;
     text-align: left;
-    background-color: lightgrey;
 }
 
 #resetFiltersButton {
@@ -23,8 +21,7 @@ ul {
 }
 
 .two {
-    width: 20vw;
-    max-height: 61.5vh;
+    max-height: 45vh;
 }
 
 .two-child {
@@ -33,4 +30,27 @@ ul {
 
 #categoryFilter {
     text-align: center;
+}
+
+#additionnals {
+    max-height: 100vh;
+    width: 20vw;
+    padding-right: 10px;
+}
+
+mat-card-title {
+    text-align: center;
+}
+
+.one {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.viz-container {
+    display: flex;
+    width: 90vw; 
+    justify-content: center;
 }
