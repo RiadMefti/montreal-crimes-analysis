@@ -6,7 +6,7 @@
       <div class="zero">
           <section class="example-section">
             <span class="example-list-section">
-              <mat-checkbox class="example-margin" [checked]="allComplete" [indeterminate]="someComplete()"
+              <mat-checkbox [checked]="allComplete" [indeterminate]="someComplete()"
                 (change)="setAll($event.checked)">
                 Toutes les catégories
               </mat-checkbox>
@@ -15,7 +15,7 @@
               <ul>
                 @for (type of filterCategories; track type) {
                 <li>
-                  <mat-checkbox [(ngModel)]="type.selected" (ngModelChange)="updateFiltersCategories()">
+                  <mat-checkbox  class="example-margin" [(ngModel)]="type.selected" (ngModelChange)="updateFiltersCategories()">
                     {{type.name}}
                   </mat-checkbox>
                 </li>
