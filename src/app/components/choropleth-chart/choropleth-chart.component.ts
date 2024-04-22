@@ -16,6 +16,8 @@ import { CommonModule } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import * as Legend from "./color-legend.js";
+import { MatButton, MatButtonModule, MatIconButton } from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 export interface Group {
   category: string,	
@@ -44,7 +46,9 @@ export interface TabType {
     MatCardModule,
     MatSortModule,
     MatCheckboxModule,
-    FormsModule
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './choropleth-chart.component.html',
   styleUrl: './choropleth-chart.component.scss'
@@ -80,7 +84,7 @@ export class ChoroplethChartComponent {
   ngOnInit() {
     this.getMontrealCrimeData().then(() => {
       this.getAllArrond();
-      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(70000)
+      const projection = d3.geoMercator().center([-73.708879, 45.579611]).scale(50000)
       this.path = d3.geoPath().projection(projection)
       this.drawMap()
     });

@@ -1,9 +1,7 @@
 
 <div class="viz-container"  style="display: flex; align-items: flex-start; width: 90vw;">
-  <div className="right" >
-    <button (click)="resetFilters($event)"> Réinitialiser les filtres </button>
+  <mat-card id="filtersCategory" className="right">
     <div class="zero">
-      <section class="example-section">
         <section class="example-section">
           <span class="example-list-section">
             <mat-checkbox class="example-margin" [checked]="allComplete" [indeterminate]="someComplete()"
@@ -22,28 +20,31 @@
               }
             </ul>
           </span>
-        </section>
 
       </section>
     </div>
-  </div>
+  </mat-card>
 
-  <div class="graph" id="map"   >
-    <div class="one" style="display: flex; flex-direction: column; justify-content: center; align-items: center;" >
-      <h2 class="chart-title">
-        Nombre de crimes moyen par année à Montréal selon le quartier
-      </h2>
-      <div id="choropleth-legend" >
-    
+  <mat-card>
+    <mat-card-title>
+      Nombre de crimes moyen par année à Montréal selon le quartier
+    </mat-card-title>
+    <div class="graph" id="map">
+      <div class="one" style="display: flex; flex-direction: column; justify-content: center; align-items: center;" >
+        <div id="choropleth-legend"></div>
+        <svg class="main-svg"></svg>
       </div>
-      
-      <svg class="main-svg"></svg>
     </div>
-  </div>
+    <mat-card-actions>
+      <button id="resetFiltersButton" (click)="resetFilters($event)" mat-raised-button> <mat-icon>replay</mat-icon> Réinitialiser les filtres</button>
+    </mat-card-actions>
+  </mat-card>
 
-    <div class="two" style="width: 20vw;">
+
+  <div class="two">
+
+    <div id="categoryFilter">
       <p>{{partOfMontrealChosen}}</p>
-
       <mat-form-field>
         <mat-label>Category</mat-label>
         <mat-select (selectionChange)="onTableSelectionChange($event.value)" [compareWith]="compareObjects" [(ngModel)]="selectedTableCategory">
@@ -52,21 +53,17 @@
           }
         </mat-select>
       </mat-form-field>
-
-      <div class="two-child" style="max-height: 70vh; overflow: scroll;">
-        <table mat-table [dataSource]="dataSource" class="info-tab">
-          <!-- <mat-text-column name="2016"> 2016 </mat-text-column>
-          <mat-text-column name="2021"> 2021 </mat-text-column> -->
-          <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
-            <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-            <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
-          </ng-container>
-
-          <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
-        </table>
-      </div>
-
     </div>
 
- 
+    <div class="two-child" style="max-height: 70vh; overflow: scroll;">
+      <table mat-table [dataSource]="dataSource" class="info-tab">
+        <ng-container [matColumnDef]="column" *ngFor="let column of columnsToDisplay">
+          <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+          <td mat-cell *matCellDef="let ageGroup">{{ ageGroup[column] }}</td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+      </table>
+    </div>
+  </div>
 </div>
