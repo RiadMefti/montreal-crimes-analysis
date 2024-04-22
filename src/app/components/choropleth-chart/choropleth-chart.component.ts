@@ -173,7 +173,7 @@ export class ChoroplethChartComponent {
     try{
       d3.select('#map').select('svg')
       .attr('width', 800)
-      .attr('height', 625)
+      .attr('height', 590)
       
       var populationByArrond = (arrond:string) => this.getMontrealCrimesByArrond(arrond);
       let maxVal = 0;
