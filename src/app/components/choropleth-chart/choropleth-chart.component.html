@@ -44,7 +44,6 @@
   <mat-card class="two">
 
     <div id="categoryFilter">
-      <p>{{partOfMontrealChosen}}</p>
       <mat-form-field>
         <mat-label>Category</mat-label>
         <mat-select (selectionChange)="onTableSelectionChange($event.value)" [compareWith]="compareObjects" [(ngModel)]="selectedTableCategory">
@@ -53,6 +52,7 @@
           }
         </mat-select>
       </mat-form-field>
+      <p style="font-weight: bold; font-size: large;">{{partOfMontrealChosen}}</p>
     </div>
 
     <div class="two-child">
