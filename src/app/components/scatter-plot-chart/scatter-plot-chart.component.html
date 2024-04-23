@@ -1,8 +1,9 @@
 <div class="chart-container">
     <h2 class="chart-title">Études des indicateurs socio-économiques</h2>
         <select class="filter-dropdown" (change)="onVariableChange($event)">
-            <ng-container *ngFor="let variable of variables">
-                <option [value]="variable">{{ variable }}</option>
+            <option value="median_income" selected>{{getVariableName('median_income')}}</option>
+            <ng-container *ngFor="let variable of nameMap | keyvalue">
+                <option [value]="variable.key" *ngIf="variable.key !== 'median_income'">{{variable.value}}</option>
             </ng-container>
         </select>
     <div class="scatter-plot-graph" #chart></div>
