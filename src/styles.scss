@@ -139,14 +139,3 @@ nav a:active {
   cursor: pointer;
 }
 
-.tooltip {
-  position: absolute;
-  background: lightgrey;
-  padding: 8px;
-  display: none;
-  pointer-events: none;
-  font-size: 12px;
-  z-index: 10; // Ensures tooltip is on top of other elements'
-
-  
-}
