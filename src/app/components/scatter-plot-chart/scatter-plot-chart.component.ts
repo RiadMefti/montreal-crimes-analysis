@@ -165,11 +165,24 @@ export class ScatterPlotChartComponent implements OnInit {
     this.svg.append('g')
       .attr('class', 'axis axis--x')
       .attr('transform', `translate(0,${this.height})`)
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x).tickFormat(d3.format('d')))
+      .append('text')
+      .attr('fill', 'black')
+      .attr('x', this.width + 10)
+      .attr('y', 40)
+      .attr('text-anchor', 'end')
+      .text(this.getVariableName(this.currentVariable));
 
     this.svg.append('g')
       .attr('class', 'axis axis--y')
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y).tickFormat(d3.format('d')))
+      .append('text')
+      .attr('fill', 'black')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 6)
+      .attr('dy', '0.71em')
+      .attr('text-anchor', 'end')
+      .text('Taux de criminalité');
   }
 
   onVariableChange(xName: string) {
