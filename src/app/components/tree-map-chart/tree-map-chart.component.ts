@@ -92,16 +92,17 @@ export class TreeMapChartComponent {
       .attr('fill', (d: any) => colorScale(d.data[CrimesTypes.total]))
       .style('stroke', 'white')
       .style('stroke-width', 1)
-      .style('opacity', 0.8)
       .on('mouseover', function() {
+        d3.selectAll('rect').transition().duration(200).style('opacity', '0.5');
         d3.select(this)
-          .style('opacity', 1)
-          .style('stroke', 'yellow')
-          .style('stroke-width', 5);
+          .transition().duration(200).style('opacity', 1)
+          .style('stroke', 'white')
+          .style('stroke-width', 1);
       })
       .on('mouseout', function() {
+        d3.selectAll('rect').transition().duration(200).style('opacity', '1');
         d3.select(this)
-          .style('opacity', 0.8)
+          .transition().duration(200).style('opacity', 1)
           .style('stroke', 'white')
           .style('stroke-width', 1);
       })
@@ -116,7 +117,7 @@ export class TreeMapChartComponent {
         // Hide tooltip when mouse leaves tooltip
         tooltip.style('opacity', 0);
       });
-      
+
     const maxTextWidth = (d: TreeNode) => Math.min(this.maxFontWidth, d.x1 - d.x0 - 10); // Adjust 10 to provide padding
     const maxTextHeight = (d: TreeNode) => Math.min(this.maxFontHeight, d.y1 - d.y0 - 20); // Adjust 20 to provide padding
 
