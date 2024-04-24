@@ -7,10 +7,11 @@
             </ng-container>
         </select> -->
         <mat-form-field>
-            <mat-label>{{getVariableName('median_income')}}</mat-label>
-            <mat-select (selectionChange)="onVariableChange($event.value)" [compareWith]="compareNeighborhood">
+            <!--<mat-label aria-placeholder="Indicateur">{{getVariableName('median_income')}}</mat-label>-->
+            <mat-label>Indicateur</mat-label>
+            <mat-select [value]="currentVariable" (selectionChange)="onVariableChange($event.value)" [compareWith]="compareNeighborhood">
               @for (variable of nameMap | keyvalue; track variable) {
-              <mat-option [value]="variable.key" *ngIf="variable.key !== 'median_income'">{{variable.value}}</mat-option>
+              <mat-option [value]="variable.key" >{{variable.value}}</mat-option>
               }
             </mat-select>
           </mat-form-field>

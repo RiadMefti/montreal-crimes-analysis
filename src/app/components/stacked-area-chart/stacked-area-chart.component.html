@@ -6,9 +6,9 @@
         <option [value]="neighborhood">{{ neighborhood }}</option>
       </ng-container>
     </select> -->
-    <mat-form-field>
-      <mat-label>Agglomération de Montréal</mat-label>
-      <mat-select (selectionChange)="onNeighborhoodChange($event.value)" [compareWith]="compareNeighborhood">
+    <mat-form-field value="Username">
+      <mat-label>Arrondissements</mat-label>
+      <mat-select [value]="selectedNeighborhood" (selectionChange)="onNeighborhoodChange($event.value)" [compareWith]="compareNeighborhood">
         @for (neighborhood of neighborhoods; track neighborhood) {
         <mat-option [value]="neighborhood">{{neighborhood}}</mat-option>
         }

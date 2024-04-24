@@ -21,33 +21,32 @@ import d3Tip from 'd3-tip'
 export class ScatterPlotChartComponent implements OnInit {
 
   @ViewChild('chart') chartContainer!: ElementRef;
+  currentVariable: string = 'median_income';
   data: Array<NeighborhoodData> = [];
   private margin = { top: 20, right: 30, bottom: 40, left: 50 };
   private svg: any;
   private width: number = 960 - this.margin.left - this.margin.right;
   private height: number = 500 - this.margin.top - this.margin.bottom;
   variables: any[] = []
-  currentVariable: string = 'median_income';
-
   private tip = (<any>d3Tip)().attr('class', 'd3-tip').html((d: NeighborhoodData) => this.getToolTipContent(d));
   
   nameMap: Map<string, string> = new Map(Object.entries({
-    'median_income': 'Median Income',
+    'median_income': 'Salaire médian',
     'population': 'Population',
-    'crime_rate': 'Crime Rate',
-    'density': 'Density',
-    'singleparent_nb': 'Single Parent Number',
-    'singleparent_pct': 'Single Parent Percentage',
-    'avg_age': 'Average Age',
-    'median_age': 'Median Age',
-    'no_diploma_nb': 'No Diploma Number',
-    'no_diploma_pct': 'No Diploma Percentage',
-    'highschool_diploma_nb': 'High School Diploma Number',
-    'highschool_diploma_pct': 'High School Diploma Percentage',
-    'unemployment_rate': 'Unemployment Rate',
-    'C90_C10_ratio': 'C90 C10 Ratio',
-    'Gini_index': 'Gini Index',
-    'total_crime': 'Total Crime'
+    'crime_rate': 'Taux de criminalité',
+    'density': 'Densité',
+    'singleparent_nb': 'Nombre de parent seul',
+    'singleparent_pct': 'Pourcentage de parent seul',
+    'avg_age': 'Âge moyen',
+    'median_age': 'Âge médian',
+    'no_diploma_nb': 'Nombre de personne sans diplôme',
+    'no_diploma_pct': 'Pourcentage de personne sans diplôme',
+    'highschool_diploma_nb': 'Nombre de DES',
+    'highschool_diploma_pct': 'Pourcentage de DES',
+    'unemployment_rate': 'Taux de chômage',
+    'C90_C10_ratio': 'Ratio C90 C10',
+    'Gini_index': 'Index Gini',
+    'total_crime': 'Nombre total de crime'
   }));
 
   constructor(private dataService: DataService) { }
@@ -63,8 +62,8 @@ export class ScatterPlotChartComponent implements OnInit {
   async loadGraph() {
     await this.getNeighborhoodData();
     this.setupChart();
-    this.buildChart();
     this.svg.call(this.tip);
+    this.buildChart();
   }
 
   async getNeighborhoodData() {

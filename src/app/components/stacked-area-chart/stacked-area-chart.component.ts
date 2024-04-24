@@ -31,6 +31,7 @@ export class StackedAreaChartComponent implements OnInit {
   private width: number = 960 - this.margin.left - this.margin.right;
   private height: number = 500 - this.margin.top - this.margin.bottom;
   neighborhoods: any[] = [];
+  public selectedNeighborhood: string = 'Agglomération de Montréal';
   private allData: any;
   private filteredData: any;
 
@@ -83,19 +84,23 @@ export class StackedAreaChartComponent implements OnInit {
   }
 
   private populateNeighborhoods() {
-    this.neighborhoods = [...new Set(this.allData
+    const uniqueNeighborhoods = new Set(this.allData
       .map((item: { ARRONDISSEMENT: any; }) => item.ARRONDISSEMENT)
       .filter((arrondissement: null) => arrondissement != null)
-    )]
-    .sort((a: any, b: any) => a.localeCompare(b));
+    )
+    uniqueNeighborhoods.add('Agglomération de Montréal');
+
+    this.neighborhoods = Array.from(uniqueNeighborhoods);
+    this.neighborhoods.sort((a: any, b: any) => a.localeCompare(b));
   }
 
   onNeighborhoodChange(value: string) {
     this.filterData(value);
+    this.selectedNeighborhood = value;
   }
 
   private filterData(neighborhood: string) {
-    if (neighborhood === 'all') {
+    if (neighborhood === 'Agglomération de Montréal') {
       this.filteredData = this.dataService.prepareDataStackedAreaChart(this.allData);
     } else {
       const data = this.allData.filter((item: { ARRONDISSEMENT: string; }) => item.ARRONDISSEMENT === neighborhood);
@@ -346,7 +351,7 @@ export class StackedAreaChartComponent implements OnInit {
   }
 
   private createColorScale(categories: string[]) {
-    const customColors = ['#ffc000', '#0f9ed5', '#db5757', '#4ea72e', '#747474', '#d86ecc'];
+    const customColors = ['#293241', '#ee6c4d', '#e0fbfc', '#98c1d9', '#3d5a80', '#ffb703'];
     return d3.scaleOrdinal(customColors).domain(categories);
   }
 
