@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import d3Tip from 'd3-tip'
+import { linearRegression, linearRegressionLine, rSquared } from 'simple-statistics';
 
 @Component({
   selector: 'app-scatter-plot-chart',
@@ -28,6 +29,7 @@ export class ScatterPlotChartComponent implements OnInit {
   private height: number = 500 - this.margin.top - this.margin.bottom;
   variables: any[] = []
   currentVariable: string = 'median_income';
+  rSquared: number = 0;
 
   private tip = (<any>d3Tip)().attr('class', 'd3-tip').html((d: NeighborhoodData) => this.getToolTipContent(d));
   
@@ -97,12 +99,14 @@ export class ScatterPlotChartComponent implements OnInit {
     const xScale = this.setXScale();
     const yScale = this.setYScale();
     const radiusScale = this.setRadiusScale(this.data);
-    console.log(xScale, yScale);
     this.drawAxes(xScale, yScale);
 
     this.drawCircles(xScale, yScale, radiusScale, oldXPosition, oldYPosition);
     this.moveCircles(xScale, yScale);
     this.setCircleHoverHandler(this.tip);
+
+    const regressionPoints = this.getLinearRegressionPoints(this.data);
+    this.drawLine(regressionPoints, xScale, yScale);
   }
 
   drawCircles(
@@ -114,7 +118,6 @@ export class ScatterPlotChartComponent implements OnInit {
   )
 
     {
-    console.log("Drawing Circles");
     this.svg.selectAll('circle')
       .data(this.data)
       .enter()
@@ -139,7 +142,6 @@ export class ScatterPlotChartComponent implements OnInit {
 
   setXScale() {
     const values = this.data.map(x => +x[this.currentVariable as keyof NeighborhoodData]);
-    console.log(d3.extent(values) as [number, number]);
     return d3.scaleLinear()
       .domain(d3.extent(values) as [number, number])
       .range([0, this.width]);
@@ -178,10 +180,8 @@ export class ScatterPlotChartComponent implements OnInit {
   setCircleHoverHandler(tip: any) {
     this.svg.selectAll('circle')
       .on('mouseover', (event: MouseEvent, d: NeighborhoodData) => {
-        console.log(event.target);
         this.svg.selectAll('circle').transition().duration(200).style('opacity', 0.5);
         const name = d.name.replaceAll("'", '').replaceAll(' ', '-');
-        console.log(name);
         this.svg.select(`#${name}`).transition().duration(200).style('opacity', 1);
         tip.show(d, event.target as SVGElement);
       })
@@ -193,7 +193,6 @@ export class ScatterPlotChartComponent implements OnInit {
 
   getToolTipContent(data: NeighborhoodData) {
     const variableName = this.getVariableName(this.currentVariable);
-    console.log(variableName);
     return `
       <div>
         <p>Neighborhood: ${data.name}</p>
@@ -206,5 +205,31 @@ export class ScatterPlotChartComponent implements OnInit {
 
   getVariableName(variable: string) {
     return this.nameMap.get(variable) || variable;
+  }
+
+  getLinearRegressionPoints(data: Array<NeighborhoodData>) {
+    const cleanData = [...data].filter(d => d.name !== 'Ville-Marie');
+    const regression = linearRegression(cleanData.map(d => [+d[this.currentVariable as keyof NeighborhoodData], d.crime_rate]));
+    const line = linearRegressionLine(regression);
+    this.rSquared = rSquared(cleanData.map(d => [+d[this.currentVariable as keyof NeighborhoodData], d.crime_rate]), line);
+    const sortedData = cleanData.sort((a, b) => +a[this.currentVariable as keyof NeighborhoodData] - +b[this.currentVariable as keyof NeighborhoodData]);
+    const firstX = sortedData[0][this.currentVariable as keyof NeighborhoodData];
+    const lastX = sortedData[sortedData.length - 1][this.currentVariable as keyof NeighborhoodData];
+    const xCoordinates = [firstX, lastX];
+
+    return xCoordinates.map(x => ({ x : (x as number), y: line(x as number) }));
+  }
+
+  drawLine(regressionPoints: Array<{ x: number, y: number }>, xScale: d3.ScaleLinear<number, number>, yScale: d3.ScaleLinear<number, number>) {
+    const line = d3.line<{ x: number, y: number }>()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y));
+
+    this.svg.append('path')
+      .datum(regressionPoints)
+      .attr('fill', 'none')
+      .attr('stroke', 'red')
+      .attr('stroke-width', 1.5)
+      .attr('d', line);
   }
 }

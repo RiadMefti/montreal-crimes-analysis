@@ -27,7 +27,8 @@
     "fs": "^0.0.1-security",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.3"
+    "zone.js": "~0.14.3",
+    "simple-statistics": "^7.8.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.2",
