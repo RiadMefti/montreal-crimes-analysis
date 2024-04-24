@@ -60,7 +60,7 @@ export class TreeMapChartComponent {
     // Define color scale
     const colorScale = d3.scaleLinear()
       .domain([0, d3.max(root.leaves(), (d: any) => d.data[CrimesTypes.total])])
-      .range(['#F7D7D0', '#90431B'] as any); // Adjust the range of colors as needed
+      .range(['#F7D7D0', '#ee6c4d'] as any); // Adjust the range of colors as needed
 
     // Define tooltip
     const tooltip = d3.select('body').append('div')

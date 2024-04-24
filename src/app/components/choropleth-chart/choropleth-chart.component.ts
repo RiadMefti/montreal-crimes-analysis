@@ -67,7 +67,7 @@ export class ChoroplethChartComponent {
   
   columnsToDisplay = ["category", "value"];
   tableCategories: TabType[] = [];
-  selectedTableCategory: TabType = {name:"Age", data: ""};
+  selectedTableCategory: TabType = {name:"Âge", data: ""};
   filterCategories: CrimeType[] = [];
   // selectedCrimeFilters: string[] = [];
   allComplete: boolean = true;
@@ -89,7 +89,7 @@ export class ChoroplethChartComponent {
       this.drawMap()
     });
     this.getMontrealPopulationByCategories().then(() => {
-      this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
+      this.selectedTableCategory = {name: "Âge", data: this.montrealPopulationByAge}
       this.setTable(this.montrealPopulationByAge);
       this.createCategories();
     });
@@ -97,17 +97,18 @@ export class ChoroplethChartComponent {
   }
 
   public resetFilters(e: any){
-    this.selectedTableCategory = {name: "Age", data: this.montrealPopulationByAge}
+    this.selectedTableCategory = {name: "Âge", data: this.montrealPopulationByAge}
+    this.partOfMontrealChosen = 'AGGLOMÉRATION DE MONTRÉAL';
     this.setTable(this.montrealPopulationByAge);
     this.setAll(true);
   }
 
   private createCategories(){
     this.tableCategories = [
-      {name: "Age", data: this.montrealPopulationByAge},
-      {name: "Degree", data: this.montrealPopulationByDegree},
-      {name: "Salary", data: this.montrealPopulationBySalary},
-      {name: "Ethnicity", data: this.montrealPopulationByEthnicity}
+      {name: "Âge", data: this.montrealPopulationByAge},
+      {name: "Diplômation", data: this.montrealPopulationByDegree},
+      {name: "Salaire", data: this.montrealPopulationBySalary},
+      {name: "Ethnicité", data: this.montrealPopulationByEthnicity}
     ]
   }
   

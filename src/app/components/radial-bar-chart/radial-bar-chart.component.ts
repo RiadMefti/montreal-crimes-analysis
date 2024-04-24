@@ -80,7 +80,7 @@ export class RadialBarChartComponent implements OnInit, AfterViewInit {
       .enter().append('path')
       .attr('d', arc)
       .attr('fill', (d, i) => {
-        const colors = ['red', 'blue', 'green'];
+        const colors = ['#98c1d9', '#ee6c4d', '#293241'];
         return colors[i % colors.length];
       })
       .on('mouseover', (event, d) => {
@@ -117,8 +117,5 @@ export class RadialBarChartComponent implements OnInit, AfterViewInit {
         .attr('stroke-width', 0.5)
         .attr('stroke-dasharray', '5,5');
     }
-
-
-
   }
 }
