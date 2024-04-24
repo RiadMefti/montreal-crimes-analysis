@@ -3,12 +3,18 @@ import * as d3 from 'd3';
 import { DataService } from '../../services/data.service';
 import { NeighborhoodData } from '../../interfaces/scatterplot';
 import { CommonModule } from '@angular/common';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 import d3Tip from 'd3-tip'
 
 @Component({
   selector: 'app-scatter-plot-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatInputModule,
+    MatSelectModule
+  ],
   templateUrl: './scatter-plot-chart.component.html',
   styleUrl: './scatter-plot-chart.component.scss'
 })
@@ -50,6 +56,10 @@ export class ScatterPlotChartComponent implements OnInit {
     this.loadGraph();
   }
   
+  compareNeighborhood(o1: string, o2: string): boolean {
+    return o1 === o2;
+  }
+
   async loadGraph() {
     await this.getNeighborhoodData();
     this.setupChart();
@@ -160,8 +170,7 @@ export class ScatterPlotChartComponent implements OnInit {
       .call(d3.axisLeft(y));
   }
 
-  onVariableChange($event: Event) {
-      const xName = ($event.target as HTMLSelectElement).value;
+  onVariableChange(xName: string) {
       this.currentVariable = xName;
       this.buildChart();
   }

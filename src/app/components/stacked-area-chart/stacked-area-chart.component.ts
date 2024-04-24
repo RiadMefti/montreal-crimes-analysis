@@ -2,6 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import * as d3 from 'd3';
 import { CommonModule } from '@angular/common';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 
 type DataPoint = {
   month: string;
@@ -11,7 +13,11 @@ type DataPoint = {
 @Component({
   selector: 'app-stacked-area-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatInputModule,
+    MatSelectModule
+  ],
   templateUrl: './stacked-area-chart.component.html',
   styleUrls: ['./stacked-area-chart.component.scss']
 })
@@ -32,6 +38,10 @@ export class StackedAreaChartComponent implements OnInit {
 
   ngOnInit() {
     this.loadGraph();
+  }
+
+  compareNeighborhood(o1: string, o2: string): boolean {
+    return o1 === o2;
   }
 
   private async loadGraph() {
@@ -80,9 +90,8 @@ export class StackedAreaChartComponent implements OnInit {
     .sort((a: any, b: any) => a.localeCompare(b));
   }
 
-  onNeighborhoodChange(event: Event) {
-    const selectedNeighborhood = (event.target as HTMLSelectElement).value;
-    this.filterData(selectedNeighborhood);
+  onNeighborhoodChange(value: string) {
+    this.filterData(value);
   }
 
   private filterData(neighborhood: string) {

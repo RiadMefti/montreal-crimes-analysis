@@ -1,11 +1,18 @@
 <div class="chart-container">
-  <h2 class="chart-title">Fluctuations des crimes sur l'île de Montréal selon une décomposition mensuelle</h2>
-    <select class="filter-dropdown" (change)="onNeighborhoodChange($event)">
+  <h3 class="chart-title">Fluctuations des crimes sur l'île de Montréal selon une décomposition mensuelle</h3>
+    <!-- <select class="filter-dropdown" (change)="onNeighborhoodChange($event)">
       <option value="all">Agglomération de Montréal</option>
-      <!-- Dynamically populate options here -->
       <ng-container *ngFor="let neighborhood of neighborhoods">
         <option [value]="neighborhood">{{ neighborhood }}</option>
       </ng-container>
-    </select>
+    </select> -->
+    <mat-form-field>
+      <mat-label>Agglomération de Montréal</mat-label>
+      <mat-select (selectionChange)="onNeighborhoodChange($event.value)" [compareWith]="compareNeighborhood">
+        @for (neighborhood of neighborhoods; track neighborhood) {
+        <mat-option [value]="neighborhood">{{neighborhood}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
     <div #chart></div>
 </div>
