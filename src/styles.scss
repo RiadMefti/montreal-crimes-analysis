@@ -1,8 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
 
-// From ng add @angular/material
+// Interesting Fonts
+@import url("https://fonts.googleapis.com/css?family=Montserrat:500,700");
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Inter');
+
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+  margin: 0; 
+}
+
+* {
+  font-family: 'Lato' !important;
+  font-size: 16px !important;
+}
+
+h1, h2, h3 {
+  font-weight: bold !important;
+}
+
+h1 {
+  font-size: 40px !important;
+}
+
+h2 {
+  font-size: 24px !important;
+}
+
+h3 {
+  font-size: 20px !important;
+}
 
 body {
     --font-size00: 12px;
@@ -104,5 +134,5 @@ nav a:active {
 }
 
 .chart-title {
-  margin: 10px 0px;
+  margin-bottom: 30px !important;
 }
