@@ -30,7 +30,7 @@
   <mat-card class="two">
     <div id="categoryFilter">
       <mat-form-field>
-        <mat-label>Category</mat-label>
+        <mat-label>Catégories</mat-label>
         <mat-select (selectionChange)="onTableSelectionChange($event.value)" [compareWith]="compareObjects" [(ngModel)]="selectedTableCategory">
           @for (category of tableCategories; track category) {
           <mat-option [value]="category">{{category.name}}</mat-option>
