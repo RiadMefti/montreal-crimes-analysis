@@ -1,11 +1,11 @@
 <div>
   <nav class="header">
     <ul>
-        <li><a (click)="click('choropleth-chart')">Choroplèthe</a></li>
-        <li><a (click)="click('stacked-area-chart')">Graphique à aires empilées</a></li>
-        <li><a (click)="click('radial-bar-chart')">Carte radiale à aires</a></li>
-        <li><a (click)="click('tree-map-chart')">Graphique de carte arborescente</a></li>
-        <li><a (click)="click('scatter-plot-chart')">Graphique à nuages de points</a></li>
+        <li><a (click)="click('choropleth-chart')">État global</a></li>
+        <li><a (click)="click('stacked-area-chart')">Évolution des dernières années</a></li>
+        <li><a (click)="click('radial-bar-chart')">Moment de la journée</a></li>
+        <li><a (click)="click('tree-map-chart')">Poste de quartier les plus occupés</a></li>
+        <li><a (click)="click('scatter-plot-chart')">Corrélations</a></li>
     </ul>
   </nav>
   
@@ -67,6 +67,15 @@
       </div>
       <div id="scatter-plot-chart">
         <app-scatter-plot-chart />
+      </div>
+    </div>
+
+    
+    <div class="body-section">
+      <div class="text-contents">
+        <h2 class="title sub">Source de données utilisés et méthodologie</h2>
+        <p>Afin de faire les graphiques présentés plus haut, nous avons utilisé deux sources de données. Le premier jeu de données provient du Service de Police de la Ville de Montréal et il comprend tous les actes criminels commis et notés par le SPVM sur l’île de Montréal (<a target="_blank" style = " white-space:nowrap; " href="https://www.donneesquebec.ca/recherche/dataset/vmtl-actes-criminels">lien</a>). Les données présentes dans celui-ci vont jusqu’à 2015. Afin de trouver le quartier où s'est produit le crime, nous avons utilisé la latitude et longitude de l’événement et l’avons traduit à l’aide d’un geojson de l’île de Montréal avec ses quartiers. </p>
+        <p>Le second jeu de données provient du recensement réalisé par Statistique Canada. Les données ont été triées par la Ville de Montréal afin d’y inclure seulement les données de l’agglomération de Montréal et d’y inclure la ville de Montréal et ses arrondissements, ainsi que les autres municipalités de l’agglomération de Montréal (<a target="_blank" style = " white-space:nowrap; " href="https://ville.montreal.qc.ca/portal/page?_pageid=6897,68149701&_dad=portal&_schema=PORTAL">lien</a>). Nous avons modifié le nom des quartiers afin qu’elles correspondent à ceux du GeoJson.</p>
       </div>
     </div>
   </div>

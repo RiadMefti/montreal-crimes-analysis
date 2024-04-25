@@ -208,9 +208,9 @@ export class ScatterPlotChartComponent implements OnInit {
     const variableName = this.getVariableName(this.currentVariable);
     return `
       <div>
-        <p>Neighborhood: ${data.name}</p>
+        <p>Arrondissement: ${data.name}</p>
         <p>Population: ${data.population}</p>
-        <p>Crime Rate: ${data.crime_rate}</p>
+        <p>Taux de criminalité: ${data.crime_rate}</p>
         <p> ${variableName}: ${+data[this.currentVariable as keyof NeighborhoodData]}</p>
       </div>
     `;
