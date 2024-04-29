@@ -1,27 +1,18 @@
-# MontrealCrimesAnalysis
+# Analyse des Crimes à Montréal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.2.
+## Aperçu
+Ce dépôt contient le code source et les composants de visualisation des données pour le site "Analyse des Crimes à Montréal". Le site offre une analyse approfondie des tendances criminelles à Montréal de janvier 2015 à mars 2024, révélant l'évolution de la criminalité au fil des ans, la distribution par quartier et les corrélations avec des indicateurs socio-économiques.
 
-## Development server
+## Fonctionnalités
+- **Statistiques Criminelles au Fil du Temps** : Explorez les modifications des taux de criminalité à Montréal au fil des années, avec un accent sur les fluctuations mensuelles.
+- **Analyse par Quartier** : Visualisations montrant la distribution des crimes par quartier, mettant en lumière les zones à taux de criminalité élevé.
+- **Analyse par Moment de la Journée** : Comprenez la fréquence des crimes selon les différents moments de la journée—jour, soir et nuit.
+- **Analyse par Poste de Quartier** : Analyse des types de crimes gérés par différents postes de police et identification des postes traitant le plus d'incidents.
+- **Corrélations Socio-économiques** : Examinez les corrélations potentielles entre les taux de criminalité et des facteurs socio-économiques tels que le salaire médian et les niveaux d'éducation.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Sources de Données
+- **Rapports de Crime du SPVM** : Comprend tous les actes criminels notés par la Police de Montréal sur l'île depuis 2015.
+- **Données de Recensement de Statistique Canada** : Filtrées pour l'agglomération de Montréal pour inclure des informations démographiques clés.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Utilisation
+Visitez [Analyse des Crimes à Montréal](https://montreal-crimes-analysis.vercel.app/) pour voir les visualisations interactives et en savoir plus sur les tendances criminelles à Montréal.
